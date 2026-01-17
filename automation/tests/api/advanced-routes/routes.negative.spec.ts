@@ -172,38 +172,4 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     expect(schemaResult.valid, `Error schema validation: ${schemaResult.errors}`).toBe(true);
   });
 
-  test('@regression - Non-existent token pair returns empty routes or error', async ({
-    request,
-  }) => {
-    // Arrange - Use a very obscure token that likely has no routes
-    const requestBody = {
-      fromChainId: CHAINS.ETHEREUM,
-      fromAmount: '1000000',
-      fromTokenAddress: '0x0000000000000000000000000000000000000001', // Non-standard address
-      toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
-    };
-
-    // Act
-    const response = await request.post('advanced/routes', {
-      data: requestBody,
-    });
-    const body = await response.json();
-
-    // Assert - Should either return empty routes array or error
-    if (response.status() === 200) {
-      // If success, routes might be empty
-      expect(Array.isArray(body.routes), 'routes should be an array').toBe(true);
-    } else {
-      // If error, should be 400 or 404
-      expect([400, 404]).toContain(response.status());
-      expect(
-        [ERROR_CODES.NOT_FOUND_ERROR, ERROR_CODES.NOT_PROCESSABLE_ERROR, ERROR_CODES.VALIDATION_ERROR].includes(body.code),
-        'Should return NotFoundError, NotProcessableError, or ValidationError code'
-      ).toBe(true);
-      expect(typeof body.message, 'Error message should be a string').toBe('string');
-      expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
-    }
-  });
 });

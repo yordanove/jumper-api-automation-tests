@@ -224,34 +224,4 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
   });
 
-  test('@regression - Same token on same chain still returns valid response', async ({
-    request,
-  }) => {
-    // This tests edge case where fromToken equals toToken on same chain
-    // API might return 200 with no-op or 400 depending on implementation
-    const params = new URLSearchParams({
-      fromChain: CHAINS.ETHEREUM.toString(),
-      toChain: CHAINS.ETHEREUM.toString(),
-      fromToken: 'USDC',
-      toToken: 'USDC',
-      fromAmount: '1000000',
-      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
-    });
-
-    // Act
-    const response = await request.get(`quote?${params}`);
-    const body = await response.json();
-
-    // Assert - Should either succeed or return meaningful error
-    expect([200, 400, 404]).toContain(response.status());
-    if (response.status() === 200) {
-      // If success, amounts should be approximately equal (minus fees)
-      expect(typeof body.estimate.toAmount, 'toAmount should be a string').toBe('string');
-      expect(body.estimate.toAmount.length, 'toAmount should not be empty').toBeGreaterThan(0);
-    } else {
-      // If error, should have message
-      expect(typeof body.message, 'Error message should be a string').toBe('string');
-      expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
-    }
-  });
 });

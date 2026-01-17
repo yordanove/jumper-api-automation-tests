@@ -35,7 +35,7 @@ export const TOKENS: Record<number, Record<string, TokenInfo>> = {
     },
     DAI: {
       symbol: 'DAI',
-      address: '0x6B175474E89094C44Da98b954EesfdTB05aF3011',
+      address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
       decimals: 18,
     },
   },
