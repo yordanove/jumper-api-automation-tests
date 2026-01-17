@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@data/*": ["automation/data/*"],
+      "@utils/*": ["automation/utils/*"],
+      "@schemas/*": ["automation/tests/schemas/*"],
+      "@fixtures/*": ["automation/fixtures/*"]
+    }
+  },
+  "include": [
+    "automation/**/*.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "reports"
+  ]
+}

@@ -1,0 +1,72 @@
+name: Performance Tests
+
+on:
+  schedule:
+    # Run every weekday at 6 AM UTC
+    - cron: '0 6 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'Performance scenario'
+        required: false
+        default: 'load'
+        type: choice
+        options:
+          - smoke
+          - load
+          - stress
+
+env:
+  API_BASE_URL: https://li.quest/v1
+
+jobs:
+  performance:
+    name: Run k6 Performance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Create results directory
+        run: mkdir -p automation/performance/results
+
+      - name: Run Quote Load Test
+        run: k6 run --out json=automation/performance/results/quote.json automation/performance/scenarios/quote-load.js
+        env:
+          K6_SCENARIO: ${{ github.event.inputs.scenario || 'load' }}
+
+      - name: Run Routes Load Test
+        run: k6 run --out json=automation/performance/results/routes.json automation/performance/scenarios/routes-load.js
+        env:
+          K6_SCENARIO: ${{ github.event.inputs.scenario || 'load' }}
+
+      - name: Run Tools Load Test
+        run: k6 run --out json=automation/performance/results/tools.json automation/performance/scenarios/tools-load.js
+        env:
+          K6_SCENARIO: ${{ github.event.inputs.scenario || 'load' }}
+
+      - name: Upload k6 results
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results
+          path: automation/performance/results
+          retention-days: 30
+
+      - name: Generate summary
+        if: always()
+        run: |
+          echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Quote Endpoint" >> $GITHUB_STEP_SUMMARY
+          echo "Results saved to artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Routes Endpoint" >> $GITHUB_STEP_SUMMARY
+          echo "Results saved to artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Tools Endpoint" >> $GITHUB_STEP_SUMMARY
+          echo "Results saved to artifacts" >> $GITHUB_STEP_SUMMARY

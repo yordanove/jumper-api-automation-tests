@@ -1,0 +1,37 @@
+{
+  "name": "lifi-api-test-suite",
+  "version": "1.0.0",
+  "description": "E2E API test suite for LI.FI bridge/DEX aggregator",
+  "scripts": {
+    "clean": "rm -rf allure-results allure-report",
+    "pretest": "rm -rf allure-results",
+    "test": "playwright test",
+    "test:quote": "rm -rf allure-results && playwright test --grep @quote",
+    "test:routes": "rm -rf allure-results && playwright test --grep @routes",
+    "test:tools": "rm -rf allure-results && playwright test --grep @tools",
+    "test:happy": "rm -rf allure-results && playwright test --grep @happy-path",
+    "test:negative": "rm -rf allure-results && playwright test --grep @negative",
+    "test:smoke": "rm -rf allure-results && playwright test --grep @smoke",
+    "test:regression": "rm -rf allure-results && playwright test --grep @regression",
+    "report": "rm -rf allure-report && npx allure generate --output allure-report allure-results && npx allure open allure-report",
+    "report:generate": "rm -rf allure-report && npx allure generate --output allure-report allure-results",
+    "perf:quote": "k6 run automation/performance/scenarios/quote-load.js",
+    "perf:routes": "k6 run automation/performance/scenarios/routes-load.js",
+    "perf:tools": "k6 run automation/performance/scenarios/tools-load.js",
+    "perf:all": "npm run perf:quote && npm run perf:routes && npm run perf:tools",
+    "lint": "eslint . --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "allure-playwright": "^3.0.0",
+    "ajv": "^8.17.0",
+    "ajv-formats": "^3.0.1",
+    "dotenv": "^16.4.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
