@@ -134,6 +134,27 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
   });
 
+  test('@regression - Missing toChain returns 400', async ({ request }) => {
+    // Arrange - Omit toChain parameter
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for missing toChain').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(typeof body.message, 'Error message should be a string').toBe('string');
+    expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+  });
+
   test('@regression - Missing toToken returns 400', async ({ request }) => {
     // Arrange - Omit toToken parameter
     const params = new URLSearchParams({
