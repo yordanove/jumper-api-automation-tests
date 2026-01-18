@@ -24,6 +24,10 @@ env:
   API_BASE_URL: https://li.quest/v1
   NODE_VERSION: '20'
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   api-tests:
     name: Run API Tests
