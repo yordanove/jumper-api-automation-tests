@@ -172,4 +172,27 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     expect(schemaResult.valid, `Error schema validation: ${schemaResult.errors}`).toBe(true);
   });
 
+  test('@regression - Non-existent token returns 400', async ({ request }) => {
+    // Arrange - Use a non-standard address that doesn't exist as a token
+    const requestBody = {
+      fromChainId: CHAINS.ETHEREUM,
+      fromAmount: '1000000',
+      fromTokenAddress: '0x0000000000000000000000000000000000000001',
+      toChainId: CHAINS.POLYGON,
+      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+    };
+
+    // Act
+    const response = await request.post('advanced/routes', {
+      data: requestBody,
+    });
+    const body = await response.json();
+
+    // Assert - API rejects invalid tokens
+    expect(response.status(), 'Should return 400 for non-existent token').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(body.message, 'Error message should mention invalid token').toMatch(/invalid|deny list/i);
+  });
+
 });

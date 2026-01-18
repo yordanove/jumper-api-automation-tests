@@ -245,4 +245,95 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
   });
 
+  test('@regression - Same token on same chain returns 400', async ({ request }) => {
+    // Arrange - fromToken equals toToken on same chain
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.ETHEREUM.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert - API rejects same token swaps
+    expect(response.status(), 'Should return 400 for same token swap').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(body.message, 'Error message should mention same token').toContain('same token');
+  });
+
+  // Slippage parameter tests
+  test('@regression @slippage - Negative slippage returns 400', async ({ request }) => {
+    // Arrange
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      slippage: '-0.05',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for negative slippage').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(typeof body.message, 'Error message should be a string').toBe('string');
+    expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+  });
+
+  test('@regression @slippage - Slippage exceeding 100% returns 400', async ({ request }) => {
+    // Arrange - Slippage of 1.5 = 150%
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      slippage: '1.5',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for slippage > 100%').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(typeof body.message, 'Error message should be a string').toBe('string');
+    expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+  });
+
+  test('@regression @slippage - Invalid slippage format returns 400', async ({ request }) => {
+    // Arrange - Non-numeric slippage
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      slippage: 'invalid',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for invalid slippage format').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(typeof body.message, 'Error message should be a string').toBe('string');
+    expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+  });
+
 });

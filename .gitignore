@@ -32,6 +32,5 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-
 # k6 binary (if downloaded locally)
 k6
