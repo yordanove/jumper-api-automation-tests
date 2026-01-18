@@ -10,6 +10,7 @@ import { test, expect } from '@playwright/test';
 import { HAPPY_PATH_PAIRS } from '../../../data/test-pairs';
 import { TEST_ADDRESSES } from '../../../data/test-addresses';
 import { CHAINS } from '../../../data/chains';
+import { TOKENS } from '../../../data/tokens';
 import { quoteResponseSchema } from '../../schemas/quote.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
@@ -139,5 +140,72 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
     expect(response.status()).toBe(200);
     expect(typeof body.estimate.executionDuration, 'executionDuration should be a number').toBe('number');
     expect(body.estimate.executionDuration, 'executionDuration should be positive').toBeGreaterThan(0);
+  });
+
+  test('@regression @slippage - Quote with custom slippage parameter', async ({ request }) => {
+    // Arrange - Test valid slippage value (3% = 0.03)
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toToken: TOKENS[CHAINS.POLYGON].USDC.address,
+      fromAmount: '1000000', // 1 USDC
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      slippage: '0.03',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status()).toBe(200);
+    expect(body.action.slippage, 'slippage should be reflected in response').toBe(0.03);
+  });
+
+  test('@regression @order - Quote with FASTEST order preference', async ({ request }) => {
+    // Arrange - Test FASTEST order option
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toToken: TOKENS[CHAINS.POLYGON].USDC.address,
+      fromAmount: '1000000', // 1 USDC
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      order: 'FASTEST',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status()).toBe(200);
+    const schemaResult = validateSchema(body, quoteResponseSchema);
+    expect(schemaResult.valid, `Schema validation failed: ${schemaResult.errors}`).toBe(true);
+  });
+
+  test('@regression @toAddress - Quote with custom recipient address', async ({ request }) => {
+    // Arrange - Test valid custom recipient (toAddress)
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toToken: TOKENS[CHAINS.POLYGON].USDC.address,
+      fromAmount: '1000000', // 1 USDC
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      toAddress: TEST_ADDRESSES.EVM_DEFAULT, // Same wallet as recipient
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status()).toBe(200);
+    expect(
+      body.action.toAddress.toLowerCase(),
+      'toAddress should be reflected in response'
+    ).toBe(TEST_ADDRESSES.EVM_DEFAULT.toLowerCase());
   });
 });

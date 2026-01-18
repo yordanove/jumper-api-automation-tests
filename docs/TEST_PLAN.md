@@ -48,12 +48,22 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 ### 2.3 Test Data Strategy
 
 **Token Pairs Selection Rationale:**
+
+*Bridge Scenarios (6 pairs):*
 1. **USDC ETH→POL Bridge** - Most popular L1→L2 bridge route
 2. **USDC POL→ARB Bridge** - L2→L2 cross-chain transfer
 3. **USDT BSC→ETH Bridge** - Different token decimals handling
-4. **ETH→USDC Swap** - Native token to stablecoin
-5. **USDC→USDT Swap** - Stablecoin to stablecoin
-6. **MATIC→USDC Swap** - Native L2 token swap
+4. **USDC ETH→OPT Bridge** - Optimism L2 coverage
+5. **USDC ETH→BASE Bridge** - Base L2 coverage
+6. **USDC ETH→AVAX Bridge** - Avalanche coverage
+
+*Swap Scenarios (6 pairs):*
+7. **ETH→USDC Swap (Ethereum)** - Native token to stablecoin
+8. **USDC→USDT Swap (Ethereum)** - Stablecoin to stablecoin
+9. **POL→USDC Swap (Polygon)** - Native L2 token swap
+10. **ETH→USDC Swap (Optimism)** - L2 swap coverage
+11. **ETH→USDC Swap (Base)** - L2 swap coverage
+12. **AVAX→USDC Swap (Avalanche)** - Alt-L1 swap coverage
 
 ---
 
@@ -259,6 +269,9 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | Polygon | 137 | EVM |
 | Arbitrum | 42161 | EVM |
 | BSC | 56 | EVM |
+| Optimism | 10 | EVM |
+| Base | 8453 | EVM |
+| Avalanche | 43114 | EVM |
 | Solana | 1151111081099710 | SVM |
 | Bitcoin | 20000000000001 | UTXO |
 | SUI | 9270000000000000 | MVM |
@@ -284,3 +297,36 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | Execution | Run tests, generate reports |
 | Documentation | Test plan, README, bug reports |
 | Performance | k6 load tests, CI integration |
+
+---
+
+## 10. Test Findings & Observations
+
+### 10.1 API Stability
+- All tests pass consistently across multiple runs
+- No flaky tests or intermittent failures observed
+- API responses are deterministic for given inputs
+
+### 10.2 Rate Limiting
+- Unauthenticated limit: ~200 requests per 2-hour window
+- Returns HTTP 429 when exceeded
+- Mitigation: Serial test execution in CI (`workers: 1`)
+
+### 10.3 Error Handling Patterns
+
+| Error Code | Meaning | When Triggered |
+|------------|---------|----------------|
+| 1011 | VALIDATION_ERROR | Invalid params, missing fields |
+| 1003 | NOT_FOUND_ERROR | Invalid chain/token combinations |
+| 1002 | NO_QUOTE_ERROR | No route available |
+
+### 10.4 API Behavior Notes
+- Empty `chains=` parameter returns 400 (not all tools)
+- Non-existent tokens may return 400 or 404 depending on endpoint
+- Native tokens use zero address (0x000...000)
+- Slippage values >1 (100%) are rejected
+
+### 10.5 No Bugs Found
+- API behaves according to documentation
+- Error messages are clear and actionable
+- Schema responses match documented structure

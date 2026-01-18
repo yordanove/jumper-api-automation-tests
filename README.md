@@ -128,7 +128,7 @@ K6_SCENARIO=stress npm run perf:quote
 
 | Endpoint | Happy Path | Negative | Performance |
 |----------|------------|----------|-------------|
-| GET /v1/quote | 15 tests | 17 tests | Yes |
+| GET /v1/quote | 18 tests | 17 tests | Yes |
 | POST /v1/advanced/routes | 16 tests | 8 tests | Yes |
 | GET /v1/tools | 10 tests | 7 tests | Yes |
 | GET /v1/tokens | 5 tests | 3 tests | No |
@@ -142,6 +142,9 @@ K6_SCENARIO=stress npm run perf:quote
 | Polygon | EVM | 137 |
 | Arbitrum | EVM | 42161 |
 | BSC | EVM | 56 |
+| Optimism | EVM | 10 |
+| Base | EVM | 8453 |
+| Avalanche | EVM | 43114 |
 | Solana | SVM | 1151111081099710 |
 | Bitcoin | UTXO | 20000000000001 |
 | SUI | MVM | 9270000000000000 |
@@ -236,10 +239,6 @@ export const CHAINS = {
 - Ensure k6 is installed: `k6 version`
 - Check rate limits aren't being hit
 
-## License
-
-MIT
-
 ## Author
 
-Created for LI.FI QA Engineer interview assessment.
+Emil Yordanov - LI.FI QA Engineer Interview Assessment
