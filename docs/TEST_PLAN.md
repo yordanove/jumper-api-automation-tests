@@ -11,6 +11,8 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 - `GET /v1/quote` - Token transfer quote requests
 - `POST /v1/advanced/routes` - Multiple route options
 - `GET /v1/tools` - Available bridges and exchanges
+- `GET /v1/tokens` - Token search and listing
+- `GET /v1/token` - Token details and price retrieval
 
 **Out of Scope:**
 - Transaction execution endpoints
@@ -77,7 +79,7 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 
 | ID | Test Case | Expected Result | Priority |
 |----|-----------|-----------------|----------|
-| Q-NEG-001 | Invalid token symbol | 404, code 1003 | P0 |
+| Q-NEG-001 | Invalid token symbol | 400, code 1011 | P0 |
 | Q-NEG-002 | Zero amount | 400, code 1011 | P0 |
 | Q-NEG-003 | Negative amount | 400 | P0 |
 | Q-NEG-004 | Missing fromAmount | 400, mentions fromAmount | P0 |
@@ -139,6 +141,51 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | T-NEG-005 | Negative chain ID | Error or empty | P2 |
 | T-NEG-006 | Mixed valid/invalid chains | Handles gracefully | P2 |
 | T-NEG-007 | Duplicate chain IDs | Deduplicates | P2 |
+
+### 3.4 GET /v1/tokens (Token Search)
+
+#### Happy Path Tests
+
+| ID | Test Case | Priority | Tags |
+|----|-----------|----------|------|
+| TKS-HP-001 | Returns tokens for Ethereum | P0 | @smoke |
+| TKS-HP-002 | Returns tokens for multiple chains | P1 | @regression |
+| TKS-HP-003 | Token objects have required properties | P1 | @regression |
+| TKS-HP-004 | Returns tokens with price information | P1 | @regression |
+| TKS-HP-005 | Returns tokens for Solana | P1 | @regression |
+
+#### Negative Tests
+
+| ID | Test Case | Expected Result | Priority |
+|----|-----------|-----------------|----------|
+| TKS-NEG-001 | Invalid chain ID | Empty results or error | P1 |
+| TKS-NEG-002 | Non-numeric chain ID | 400 | P1 |
+| TKS-NEG-003 | Negative chain ID | Error or empty | P2 |
+
+### 3.5 GET /v1/token (Token Details & Price)
+
+#### Happy Path Tests
+
+| ID | Test Case | Priority | Tags |
+|----|-----------|----------|------|
+| TKD-HP-001 | Get token details by symbol | P0 | @smoke |
+| TKD-HP-002 | Token includes accurate price | P0 | @smoke |
+| TKD-HP-003 | Get token details by address | P1 | @regression |
+| TKD-HP-004 | Token includes market data | P1 | @regression |
+| TKD-HP-005 | Get native token (ETH) details | P1 | @regression |
+| TKD-HP-006 | Get token on Polygon | P1 | @regression |
+
+#### Negative Tests
+
+| ID | Test Case | Expected Result | Priority |
+|----|-----------|-----------------|----------|
+| TKD-NEG-001 | Invalid token symbol | 400, code 1011 | P0 |
+| TKD-NEG-002 | Missing token parameter | 400, code 1011 | P0 |
+| TKD-NEG-003 | Missing chain parameter | 400, code 1011 | P0 |
+| TKD-NEG-004 | Invalid chain ID | 400, code 1011 | P1 |
+| TKD-NEG-005 | Non-numeric chain ID | 400, code 1011 | P1 |
+| TKD-NEG-006 | Invalid token address format | 400, code 1011 | P1 |
+| TKD-NEG-007 | Non-existent token address | 400, code 1011 | P2 |
 
 ---
 

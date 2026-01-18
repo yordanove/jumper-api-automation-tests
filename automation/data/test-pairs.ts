@@ -3,6 +3,7 @@
  */
 
 import { CHAINS } from './chains';
+import { TEST_ADDRESSES } from './test-addresses';
 
 export interface TestPair {
   name: string;
@@ -99,8 +100,8 @@ export const NEGATIVE_TEST_CASES = {
     fromToken: 'INVALID_TOKEN_XYZ',
     toToken: 'USDC',
     fromAmount: '1000000',
-    expectedStatus: 404,
-    expectedCode: 1003,
+    expectedStatus: 400,
+    expectedCode: 1011,
   },
   ZERO_AMOUNT: {
     name: 'Zero amount',
@@ -139,7 +140,7 @@ export const NEGATIVE_TEST_CASES = {
     fromToken: 'USDC',
     toToken: 'USDC',
     fromAmount: '1000000',
-    fromAddress: 'invalid-address',
+    fromAddress: TEST_ADDRESSES.INVALID.NOT_HEX,
     expectedStatus: 400,
     expectedCode: 1011,
   },

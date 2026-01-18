@@ -9,6 +9,8 @@ This test suite validates the LI.FI API endpoints that power cross-chain token t
 - **GET /v1/quote** - Request quotes for token transfers
 - **POST /v1/advanced/routes** - Get multiple route options
 - **GET /v1/tools** - List available bridges and exchanges
+- **GET /v1/tokens** - Search and list tokens by chain
+- **GET /v1/token** - Get token details and price
 
 ## Prerequisites
 
@@ -42,6 +44,7 @@ npm test
 npm run test:quote    # Quote endpoint tests
 npm run test:routes   # Routes endpoint tests
 npm run test:tools    # Tools endpoint tests
+npm run test:tokens   # Token search/price tests
 ```
 
 ### By Test Type
@@ -124,9 +127,11 @@ K6_SCENARIO=stress npm run perf:quote
 
 | Endpoint | Happy Path | Negative | Performance |
 |----------|------------|----------|-------------|
-| GET /v1/quote | 9 tests | 10 tests | Yes |
+| GET /v1/quote | 9 tests | 18 tests | Yes |
 | POST /v1/advanced/routes | 5 tests | 8 tests | Yes |
 | GET /v1/tools | 8 tests | 7 tests | Yes |
+| GET /v1/tokens | 5 tests | 3 tests | No |
+| GET /v1/token | 6 tests | 7 tests | No |
 
 ### Chains Covered
 
@@ -158,7 +163,7 @@ You can manually trigger workflows from GitHub Actions with different test types
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `API_BASE_URL` | LI.FI API base URL | https://li.quest/v1 |
+| `API_BASE_URL` | LI.FI API base URL | https://li.quest/v1/ |
 | `TEST_ENV` | Environment name | production |
 
 ### Playwright Config

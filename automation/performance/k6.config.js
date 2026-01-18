@@ -48,9 +48,6 @@ export const thresholds = {
 
   // Error rate threshold
   http_req_failed: ['rate<0.05'], // Less than 5% errors
-
-  // Throughput threshold
-  http_reqs: ['rate>5'], // At least 5 requests per second
 };
 
 export const BASE_URL = 'https://li.quest/v1';

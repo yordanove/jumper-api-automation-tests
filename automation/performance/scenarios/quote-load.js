@@ -48,12 +48,12 @@ const TEST_PARAMS = [
     fromAmount: '5000000', // 5 USDC
   },
   {
-    // MATIC to USDC on Polygon
+    // POL (native token) to USDC on Polygon
     fromChain: 137,
     toChain: 137,
-    fromToken: 'MATIC',
+    fromToken: '0x0000000000000000000000000000000000000000',
     toToken: 'USDC',
-    fromAmount: '1000000000000000000', // 1 MATIC
+    fromAmount: '1000000000000000000', // 1 POL
   },
 ];
 

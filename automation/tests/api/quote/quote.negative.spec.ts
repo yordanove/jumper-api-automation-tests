@@ -34,9 +34,13 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     const response = await request.get(`quote?${params}`);
     const body = await response.json();
 
-    // Assert - API returns 400 for validation errors including invalid tokens
-    expect(response.status(), 'Should return 400 for invalid token').toBe(400);
-    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    // Assert - Use expected values from test data
+    expect(response.status(), `Should return ${testCase.expectedStatus} for invalid token`).toBe(
+      testCase.expectedStatus
+    );
+    expect(body.code, `Should return error code ${testCase.expectedCode}`).toBe(
+      testCase.expectedCode
+    );
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
 
@@ -62,11 +66,15 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     const response = await request.get(`quote?${params}`);
     const body = await response.json();
 
-    // Assert
-    expect(response.status(), 'Should return 400 for zero amount').toBe(400);
+    // Assert - Use expected values from test data
+    expect(response.status(), `Should return ${testCase.expectedStatus} for zero amount`).toBe(
+      testCase.expectedStatus
+    );
+    expect(body.code, `Should return error code ${testCase.expectedCode}`).toBe(
+      testCase.expectedCode
+    );
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
-    expect(body.code, 'Error code should be validation error').toBe(ERROR_CODES.VALIDATION_ERROR);
   });
 
   test('@regression - Negative amount returns 400', async ({ request }) => {
@@ -86,9 +94,13 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     const response = await request.get(`quote?${params}`);
     const body = await response.json();
 
-    // Assert
-    expect(response.status(), 'Should return 400 for negative amount').toBe(400);
-    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    // Assert - Use expected values from test data
+    expect(response.status(), `Should return ${testCase.expectedStatus} for negative amount`).toBe(
+      testCase.expectedStatus
+    );
+    expect(body.code, `Should return error code ${testCase.expectedCode}`).toBe(
+      testCase.expectedCode
+    );
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
   });
@@ -193,34 +205,41 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     const response = await request.get(`quote?${params}`);
     const body = await response.json();
 
-    // Assert
-    expect([400, 404]).toContain(response.status());
-    expect(
-      [ERROR_CODES.VALIDATION_ERROR, ERROR_CODES.NOT_FOUND_ERROR].includes(body.code),
-      'Should return ValidationError or NotFoundError code'
-    ).toBe(true);
+    // Assert - Use expected values from test data
+    expect(response.status(), `Should return ${testCase.expectedStatus} for invalid chain`).toBe(
+      testCase.expectedStatus
+    );
+    expect(body.code, `Should return error code ${testCase.expectedCode}`).toBe(
+      testCase.expectedCode
+    );
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
   });
 
   test('@regression - Invalid fromAddress format returns error', async ({ request }) => {
+    const testCase = NEGATIVE_TEST_CASES.INVALID_ADDRESS;
+
     // Arrange
     const params = new URLSearchParams({
-      fromChain: CHAINS.ETHEREUM.toString(),
-      toChain: CHAINS.POLYGON.toString(),
-      fromToken: 'USDC',
-      toToken: 'USDC',
-      fromAmount: '1000000',
-      fromAddress: TEST_ADDRESSES.INVALID.NOT_HEX,
+      fromChain: testCase.fromChain.toString(),
+      toChain: testCase.toChain.toString(),
+      fromToken: testCase.fromToken,
+      toToken: testCase.toToken,
+      fromAmount: testCase.fromAmount,
+      fromAddress: testCase.fromAddress,
     });
 
     // Act
     const response = await request.get(`quote?${params}`);
     const body = await response.json();
 
-    // Assert
-    expect(response.status(), 'Should return 400 for invalid address').toBe(400);
-    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    // Assert - Use expected values from test data
+    expect(response.status(), `Should return ${testCase.expectedStatus} for invalid address`).toBe(
+      testCase.expectedStatus
+    );
+    expect(body.code, `Should return error code ${testCase.expectedCode}`).toBe(
+      testCase.expectedCode
+    );
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
   });

@@ -9,6 +9,7 @@
     "test:quote": "rm -rf allure-results && playwright test --grep @quote",
     "test:routes": "rm -rf allure-results && playwright test --grep @routes",
     "test:tools": "rm -rf allure-results && playwright test --grep @tools",
+    "test:tokens": "rm -rf allure-results && playwright test --grep @tokens",
     "test:happy": "rm -rf allure-results && playwright test --grep @happy-path",
     "test:negative": "rm -rf allure-results && playwright test --grep @negative",
     "test:smoke": "rm -rf allure-results && playwright test --grep @smoke",
