@@ -13,7 +13,6 @@ import { validateSchema } from '../../../utils/schema-validator';
 
 test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () => {
   test('@regression - Zero amount returns 400', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '0',
@@ -23,21 +22,19 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status(), 'Should return 400 for zero amount').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+    expect(body.message, 'Error message should mention amount').toMatch(/amount/i);
   });
 
   test('@regression - Negative amount returns 400', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '-1000000',
@@ -47,19 +44,17 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status(), 'Should return 400 for negative amount').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(body.message, 'Error message should mention amount').toMatch(/amount/i);
   });
 
   test('@regression - Missing fromChainId returns 400', async ({ request }) => {
-    // Arrange - Omit fromChainId
     const requestBody = {
       fromAmount: '1000000',
       fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
@@ -67,21 +62,19 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status(), 'Should return 400 for missing fromChainId').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+    expect(body.message, 'Error message should mention fromChainId').toMatch(/fromChainId/i);
   });
 
   test('@regression - Missing fromAmount returns 400', async ({ request }) => {
-    // Arrange - Omit fromAmount
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
@@ -89,19 +82,17 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status(), 'Should return 400 for missing fromAmount').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(body.message, 'Error message should mention fromAmount').toMatch(/fromAmount/i);
   });
 
   test('@regression - Invalid token address returns error', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '1000000',
@@ -111,13 +102,11 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect([400, 404]).toContain(response.status());
     expect(
       [ERROR_CODES.VALIDATION_ERROR, ERROR_CODES.NOT_FOUND_ERROR].includes(body.code),
@@ -125,10 +114,10 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     ).toBe(true);
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
+    expect(body.message, 'Error message should mention token or address').toMatch(/token|address/i);
   });
 
   test('@regression - Invalid chain ID returns error', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: 999999,
       fromAmount: '1000000',
@@ -138,43 +127,37 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect([400, 404]).toContain(response.status());
     expect(
       [ERROR_CODES.VALIDATION_ERROR, ERROR_CODES.NOT_FOUND_ERROR].includes(body.code),
       'Should return ValidationError or NotFoundError code'
     ).toBe(true);
+    expect(body.message, 'Error message should mention chain').toMatch(/chain/i);
   });
 
   test('@regression - Empty request body returns 400', async ({ request }) => {
-    // Arrange - Send empty body
     const requestBody = {};
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status(), 'Should return 400 for empty body').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
     expect(typeof body.message, 'Error message should be a string').toBe('string');
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
 
-    // Validate error schema
     const schemaResult = validateSchema(body, errorResponseSchema);
     expect(schemaResult.valid, `Error schema validation: ${schemaResult.errors}`).toBe(true);
   });
 
   test('@regression - Non-existent token returns 400', async ({ request }) => {
-    // Arrange - Use a non-standard address that doesn't exist as a token
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '1000000',
@@ -184,16 +167,13 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert - API rejects invalid tokens
     expect(response.status(), 'Should return 400 for non-existent token').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
     expect(body.message, 'Error message should mention invalid token').toMatch(/invalid|deny list/i);
   });
-
 });

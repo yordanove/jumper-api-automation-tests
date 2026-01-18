@@ -28,7 +28,7 @@ cd lifi-api-tests
 # Install dependencies
 npm install
 
-# Install Playwright
+# Install Playwright (optional - not needed for API-only tests)
 npx playwright install
 ```
 
@@ -153,8 +153,8 @@ K6_SCENARIO=stress npm run perf:quote
 
 Tests run automatically via GitHub Actions:
 
-- **On Push/PR** - Smoke tests run as PR gate
-- **On Main** - Full regression + Allure report deployment
+- **On Push/PR** - Full test suite runs
+- **On Main** - Allure report deployed to GitHub Pages
 - **Scheduled** - Performance tests run weekly
 
 ### Manual Trigger
@@ -180,17 +180,23 @@ Key settings in `playwright.config.ts`:
 
 ## Test Data
 
-Test pairs are defined in `automation/data/test-pairs.ts`:
+Test pairs are defined in `automation/data/test-pairs.ts` (12 pairs total):
 
-**Bridge scenarios:**
+**Bridge scenarios (6):**
 - USDC: Ethereum → Polygon
 - USDC: Polygon → Arbitrum
 - USDT: BSC → Ethereum
+- USDC: Ethereum → Optimism
+- USDC: Ethereum → Base
+- USDC: Ethereum → Avalanche
 
-**Swap scenarios:**
+**Swap scenarios (6):**
 - ETH → USDC on Ethereum
 - USDC → USDT on Ethereum
-- MATIC → USDC on Polygon
+- POL → USDC on Polygon
+- ETH → USDC on Optimism
+- ETH → USDC on Base
+- AVAX → USDC on Avalanche
 
 ## Extending Tests
 

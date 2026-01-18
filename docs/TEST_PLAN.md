@@ -36,6 +36,8 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | Regression | Full feature coverage | Nightly | ~10 min |
 | Performance | Load/stress testing | Weekly | ~30 min |
 
+**Tag Taxonomy:** `@smoke` = critical subset (~10 tests); `@regression` = full suite (97 tests). All tests are tagged `@regression` by design for explicit suite naming.
+
 ### 2.2 Test Types
 
 | Type | Description | Tools |
@@ -73,6 +75,8 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 
 #### Happy Path Tests
 
+*Token pair tests use data-driven approach with 12 pairs defined in Section 2.3. Representative examples shown below.*
+
 | ID | Test Case | Priority | Tags |
 |----|-----------|----------|------|
 | Q-HP-001 | USDC Ethereum to Polygon bridge | P0 | @smoke @bridge |
@@ -80,7 +84,7 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | Q-HP-003 | USDT BSC to Ethereum bridge | P1 | @regression @bridge |
 | Q-HP-004 | ETH to USDC swap on Ethereum | P0 | @smoke @swap |
 | Q-HP-005 | USDC to USDT swap on Ethereum | P1 | @regression @swap |
-| Q-HP-006 | MATIC to USDC swap on Polygon | P1 | @regression @swap |
+| Q-HP-006 | POL to USDC swap on Polygon | P1 | @regression @swap |
 | Q-HP-007 | Response contains transactionRequest | P1 | @regression |
 | Q-HP-008 | Response includes gas cost estimates | P1 | @regression |
 | Q-HP-009 | Response includes execution duration | P2 | @regression |
@@ -330,3 +334,22 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 - API behaves according to documentation
 - Error messages are clear and actionable
 - Schema responses match documented structure
+
+### 10.6 Bug Report Template
+
+If defects were found, they would be reported using this format:
+
+| Field | Description |
+|-------|-------------|
+| **ID** | BUG-XXX |
+| **Title** | Brief description of the issue |
+| **Severity** | Critical / High / Medium / Low |
+| **Endpoint** | Affected API endpoint |
+| **Environment** | Production (li.quest/v1) |
+| **Steps to Reproduce** | Numbered steps to trigger the issue |
+| **Expected Result** | What should happen |
+| **Actual Result** | What actually happens |
+| **Evidence** | Request/response payloads, screenshots |
+| **Notes** | Additional context or workarounds |
+
+*Evidence would include Playwright trace files, Allure report screenshots, and full request/response payloads from test execution.*

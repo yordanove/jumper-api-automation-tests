@@ -14,20 +14,15 @@ import { routesResponseSchema } from '../../schemas/routes.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
 test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () => {
-  // Generate tests for each token pair
   for (const pair of HAPPY_PATH_PAIRS) {
     const tags = pair.tags.map((t) => `@${t}`).join(' ');
 
     test(`${tags} - ${pair.name}`, async ({ request }) => {
-      // Get token addresses for the request
       const fromTokenInfo = TOKENS[pair.fromChain]?.[pair.fromToken];
       const toTokenInfo = TOKENS[pair.toChain]?.[pair.toToken];
-
-      // Skip if token addresses not found (would need to use symbol instead)
       const fromTokenAddress = fromTokenInfo?.address || pair.fromToken;
       const toTokenAddress = toTokenInfo?.address || pair.toToken;
 
-      // Arrange - Build request body
       const requestBody = {
         fromChainId: pair.fromChain,
         fromAmount: pair.fromAmount,
@@ -40,24 +35,19 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
         },
       };
 
-      // Act - Make API request
       const response = await request.post('advanced/routes', {
         data: requestBody,
       });
       const body = await response.json();
 
-      // Assert - Status Code
       expect(response.status(), `Expected 200 OK for ${pair.name}`).toBe(200);
 
-      // Assert - Schema Validation
       const schemaResult = validateSchema(body, routesResponseSchema);
       expect(schemaResult.valid, `Schema validation failed: ${schemaResult.errors}`).toBe(true);
 
-      // Assert - Routes array present and non-empty
       expect(Array.isArray(body.routes), 'routes should be an array').toBe(true);
       expect(body.routes.length, 'routes should have at least one route').toBeGreaterThan(0);
 
-      // Assert - First route has required fields
       const firstRoute = body.routes[0];
       expect(typeof firstRoute.id, 'route.id should be a string').toBe('string');
       expect(firstRoute.id.length, 'route.id should not be empty').toBeGreaterThan(0);
@@ -68,58 +58,49 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
       expect(typeof firstRoute.toAmount, 'route.toAmount should be a string').toBe('string');
       expect(firstRoute.toAmount.length, 'route.toAmount should not be empty').toBeGreaterThan(0);
 
-      // Assert - Route has steps
       expect(Array.isArray(firstRoute.steps), 'route.steps should be an array').toBe(true);
       expect(firstRoute.steps.length, 'route should have at least one step').toBeGreaterThan(0);
     });
   }
 
   test('@smoke @regression - Returns at least one route with tool info', async ({ request }) => {
-    // Arrange - Use popular bridge route
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
-      fromAmount: '10000000', // 10 USDC
+      fromAmount: '10000000', // 10 USDC (6 decimals)
       fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
       toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(body.routes.length, 'Should return multiple route options').toBeGreaterThanOrEqual(1);
 
-    // Check that routes use different tools/bridges
     const tools = body.routes.map((r: { steps: Array<{ tool: string }> }) => r.steps[0]?.tool);
     const uniqueTools = [...new Set(tools)];
-    // May have same tool with different parameters, so just verify we have tools
     expect(uniqueTools.length, 'Should have at least one tool').toBeGreaterThanOrEqual(1);
   });
 
   test('@regression - Routes include gas cost estimates', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
-      fromAmount: '5000000', // 5 USDC
+      fromAmount: '5000000', // 5 USDC (6 decimals)
       fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.ARBITRUM,
       toTokenAddress: TOKENS[CHAINS.ARBITRUM].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(body.routes.length).toBeGreaterThan(0);
 
@@ -129,29 +110,25 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
   });
 
   test('@regression - Route steps have complete action and estimate', async ({ request }) => {
-    // Arrange
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
-      fromAmount: '1000000000000000000', // 1 ETH
+      fromAmount: '1000000000000000000', // 1 ETH (18 decimals)
       fromTokenAddress: TEST_ADDRESSES.ZERO,
       toChainId: CHAINS.ETHEREUM,
       toTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
 
     const firstRoute = body.routes[0];
     const firstStep = firstRoute.steps[0];
 
-    // Verify step structure
     expect(typeof firstStep.id, 'step.id should be a string').toBe('string');
     expect(firstStep.id.length, 'step.id should not be empty').toBeGreaterThan(0);
     expect(typeof firstStep.type, 'step.type should be a string').toBe('string');
@@ -161,16 +138,14 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
     expect(typeof firstStep.action, 'step.action should be an object').toBe('object');
     expect(typeof firstStep.estimate, 'step.estimate should be an object').toBe('object');
 
-    // Verify estimate has amounts
     expect(typeof firstStep.estimate.toAmount, 'estimate.toAmount should be a string').toBe('string');
     expect(firstStep.estimate.toAmount.length, 'estimate.toAmount should not be empty').toBeGreaterThan(0);
   });
 
   test('@regression - Order parameter affects route sorting', async ({ request }) => {
-    // Arrange - Test with CHEAPEST order
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
-      fromAmount: '100000000', // 100 USDC
+      fromAmount: '100000000', // 100 USDC (6 decimals)
       fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
       toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
@@ -180,21 +155,18 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
       },
     };
 
-    // Act
     const response = await request.post('advanced/routes', {
       data: requestBody,
     });
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(body.routes.length).toBeGreaterThan(0);
 
-    // Verify routes are sorted (first should have best value)
+    // For CHEAPEST order, first route should give same or more tokens than subsequent routes
     if (body.routes.length > 1) {
       const firstRouteAmount = BigInt(body.routes[0].toAmount);
       const secondRouteAmount = BigInt(body.routes[1].toAmount);
-      // For CHEAPEST, first route should give same or more tokens
       expect(firstRouteAmount).toBeGreaterThanOrEqual(secondRouteAmount);
     }
   });

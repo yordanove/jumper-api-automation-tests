@@ -13,18 +13,14 @@ import { validateSchema } from '../../../utils/schema-validator';
 
 test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   test('@smoke @regression - Returns bridges and exchanges without filter', async ({ request }) => {
-    // Act
     const response = await request.get('tools');
     const body = await response.json();
 
-    // Assert - Status Code
     expect(response.status(), 'Should return 200 OK').toBe(200);
 
-    // Assert - Schema Validation
     const schemaResult = validateSchema(body, toolsResponseSchema);
     expect(schemaResult.valid, `Schema validation failed: ${schemaResult.errors}`).toBe(true);
 
-    // Assert - Has bridges and exchanges
     expect(Array.isArray(body.bridges), 'bridges should be an array').toBe(true);
     expect(Array.isArray(body.exchanges), 'exchanges should be an array').toBe(true);
     expect(body.bridges.length, 'Should have at least one bridge').toBeGreaterThan(0);
@@ -32,11 +28,9 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   });
 
   test('@regression - Bridge objects have required properties', async ({ request }) => {
-    // Act
     const response = await request.get('tools');
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
 
     const firstBridge = body.bridges[0];
@@ -49,7 +43,7 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
     expect(Array.isArray(firstBridge.supportedChains), 'bridge.supportedChains should be an array').toBe(true);
     expect(firstBridge.supportedChains.length, 'bridge.supportedChains should not be empty').toBeGreaterThan(0);
 
-    // Verify supportedChains structure for bridges
+    // Bridge supportedChains contain fromChainId/toChainId pairs
     const chainPair = firstBridge.supportedChains[0];
     expect(typeof chainPair.fromChainId, 'fromChainId should be a number').toBe('number');
     expect(chainPair.fromChainId, 'fromChainId should be positive').toBeGreaterThan(0);
@@ -58,11 +52,9 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   });
 
   test('@regression - Exchange objects have required properties', async ({ request }) => {
-    // Act
     const response = await request.get('tools');
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
 
     const firstExchange = body.exchanges[0];
@@ -75,52 +67,53 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
     expect(Array.isArray(firstExchange.supportedChains), 'exchange.supportedChains should be an array').toBe(true);
     expect(firstExchange.supportedChains.length, 'exchange.supportedChains should not be empty').toBeGreaterThan(0);
 
-    // Verify supportedChains for exchanges is array of chain IDs
+    // Exchange supportedChains is a flat array of chain IDs
     expect(
       typeof firstExchange.supportedChains[0],
       'exchange supportedChains should contain numbers'
     ).toBe('number');
   });
 
-  // Tests for Solana, Bitcoin, and SUI as specified in the task
   for (const chain of TOOLS_TEST_CHAINS) {
     test(`@regression - Returns tools for ${chain.name} (${chain.chainType})`, async ({
       request,
     }) => {
-      // Act
       const response = await request.get(`tools?chains=${chain.chainId}`);
       const body = await response.json();
 
-      // Assert
       expect(response.status(), `Should return 200 for ${chain.name}`).toBe(200);
 
-      // Assert - Schema Validation
       const schemaResult = validateSchema(body, toolsResponseSchema);
       expect(schemaResult.valid, `Schema validation failed: ${schemaResult.errors}`).toBe(true);
 
-      // Assert - Has bridges or exchanges for this chain
       expect(Array.isArray(body.bridges), 'bridges should be an array').toBe(true);
       expect(Array.isArray(body.exchanges), 'exchanges should be an array').toBe(true);
 
-      // At least one of bridges or exchanges should have entries for this chain
-      const hasBridges = body.bridges.length > 0;
-      const hasExchanges = body.exchanges.length > 0;
+      // Verify at least one tool actually supports the requested chain
+      const hasSupportingBridge = body.bridges.some(
+        (bridge: { supportedChains: Array<{ fromChainId: number; toChainId: number }> }) =>
+          bridge.supportedChains.some(
+            (pair: { fromChainId: number; toChainId: number }) =>
+              pair.fromChainId === chain.chainId || pair.toChainId === chain.chainId
+          )
+      );
+      const hasSupportingExchange = body.exchanges.some(
+        (exchange: { supportedChains: number[] }) =>
+          exchange.supportedChains.includes(chain.chainId)
+      );
       expect(
-        hasBridges || hasExchanges,
-        `${chain.name} should have at least one bridge or exchange`
+        hasSupportingBridge || hasSupportingExchange,
+        `${chain.name} should have at least one tool that supports chain ${chain.chainId}`
       ).toBe(true);
     });
   }
 
   test('@regression - Solana chain has bridges with SOL support', async ({ request }) => {
-    // Act
     const response = await request.get(`tools?chains=${CHAINS.SOLANA}`);
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
 
-    // Verify at least one bridge supports Solana
     const hasSolanaBridge = body.bridges.some(
       (bridge: { supportedChains: Array<{ fromChainId: number; toChainId: number }> }) =>
         bridge.supportedChains.some(
@@ -132,15 +125,13 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   });
 
   test('@regression - Bitcoin chain has bridges', async ({ request }) => {
-    // Act
     const response = await request.get(`tools?chains=${CHAINS.BITCOIN}`);
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(Array.isArray(body.bridges), 'bridges should be an array').toBe(true);
 
-    // Bitcoin support is newer, verify we get valid response structure
+    // Bitcoin support is newer - verify we get valid response structure
     if (body.bridges.length > 0) {
       const btcBridge = body.bridges[0];
       expect(typeof btcBridge.key, 'bridge.key should be a string').toBe('string');
@@ -151,15 +142,12 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   });
 
   test('@regression - SUI chain has bridges', async ({ request }) => {
-    // Act
     const response = await request.get(`tools?chains=${CHAINS.SUI}`);
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(Array.isArray(body.bridges), 'bridges should be an array').toBe(true);
 
-    // Verify at least one bridge supports SUI
     if (body.bridges.length > 0) {
       const hasSuiBridge = body.bridges.some(
         (bridge: { supportedChains: Array<{ fromChainId: number; toChainId: number }> }) =>
@@ -173,17 +161,14 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
   });
 
   test('@regression - Multiple chain filter returns filtered results', async ({ request }) => {
-    // Act - Filter by multiple EVM chains
     const chains = [CHAINS.ETHEREUM, CHAINS.POLYGON];
     const response = await request.get(`tools?chains=${chains.join(',')}`);
     const body = await response.json();
 
-    // Assert
     expect(response.status()).toBe(200);
     expect(body.bridges.length, 'Should have bridges for filtered chains').toBeGreaterThan(0);
     expect(body.exchanges.length, 'Should have exchanges for filtered chains').toBeGreaterThan(0);
 
-    // Verify exchanges support at least one of the filtered chains
     const supportedExchange = body.exchanges.find(
       (exchange: { supportedChains: number[] }) =>
         exchange.supportedChains.includes(CHAINS.ETHEREUM) ||
