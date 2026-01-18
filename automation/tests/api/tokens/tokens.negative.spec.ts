@@ -6,6 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { CHAINS } from '../../../data/chains';
+import { TEST_ADDRESSES } from '../../../data/test-addresses';
 import { ERROR_CODES } from '../../schemas/error.schema';
 
 test.describe('GET /v1/tokens - Negative Tests @tokens @negative', () => {
@@ -153,7 +154,7 @@ test.describe('GET /v1/token - Negative Tests @tokens @negative', () => {
     // Arrange - Use invalid address format
     const params = new URLSearchParams({
       chain: CHAINS.ETHEREUM.toString(),
-      token: 'not-a-valid-address',
+      token: TEST_ADDRESSES.INVALID.NOT_HEX,
     });
 
     // Act

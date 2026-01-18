@@ -9,6 +9,8 @@
 
 import { test, expect } from '@playwright/test';
 import { CHAINS } from '../../../data/chains';
+import { TEST_ADDRESSES } from '../../../data/test-addresses';
+import { TOKENS } from '../../../data/tokens';
 import { tokensResponseSchema, tokenDetailsSchema } from '../../schemas/tokens.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
@@ -96,7 +98,7 @@ test.describe('GET /v1/tokens - Token Search @tokens @happy-path', () => {
     const tokens = body.tokens[CHAINS.ETHEREUM.toString()];
     // Find ETH token which should always have price
     const ethToken = tokens.find(
-      (t: { address: string }) => t.address === '0x0000000000000000000000000000000000000000'
+      (t: { address: string }) => t.address === TEST_ADDRESSES.ZERO
     );
     expect(ethToken, 'Should find ETH token').toBeDefined();
     expect(ethToken.priceUSD, 'ETH should have priceUSD').toBeDefined();
@@ -176,7 +178,7 @@ test.describe('GET /v1/token - Token Details & Price @tokens @happy-path', () =>
     // Arrange - Get USDC by contract address
     const params = new URLSearchParams({
       chain: CHAINS.ETHEREUM.toString(),
-      token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC address
+      token: TOKENS[CHAINS.ETHEREUM].USDC.address,
     });
 
     // Act
@@ -220,7 +222,7 @@ test.describe('GET /v1/token - Token Details & Price @tokens @happy-path', () =>
     // Arrange - Get ETH using native token address
     const params = new URLSearchParams({
       chain: CHAINS.ETHEREUM.toString(),
-      token: '0x0000000000000000000000000000000000000000',
+      token: TEST_ADDRESSES.ZERO,
     });
 
     // Act

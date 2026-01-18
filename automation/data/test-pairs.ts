@@ -17,11 +17,11 @@ export interface TestPair {
 }
 
 /**
- * Happy path test pairs (6 pairs covering swap and bridge scenarios)
+ * Happy path test pairs (12 pairs covering swap and bridge scenarios)
  * Selection rationale:
  * - Mix of same-chain swaps and cross-chain bridges
  * - Popular token pairs (USDC, ETH, stablecoins)
- * - Coverage of major chains (Ethereum, Polygon, Arbitrum, BSC)
+ * - Coverage of major chains (Ethereum, Polygon, Arbitrum, BSC, Optimism, Base, Avalanche)
  */
 export const HAPPY_PATH_PAIRS: TestPair[] = [
   // Cross-chain bridges
@@ -55,6 +55,36 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     type: 'bridge',
     tags: ['regression', 'bridge'],
   },
+  {
+    name: 'USDC Ethereum to Optimism bridge',
+    fromChain: CHAINS.ETHEREUM,
+    toChain: CHAINS.OPTIMISM,
+    fromToken: 'USDC',
+    toToken: 'USDC',
+    fromAmount: '1000000', // 1 USDC
+    type: 'bridge',
+    tags: ['regression', 'bridge'],
+  },
+  {
+    name: 'USDC Ethereum to Base bridge',
+    fromChain: CHAINS.ETHEREUM,
+    toChain: CHAINS.BASE,
+    fromToken: 'USDC',
+    toToken: 'USDC',
+    fromAmount: '1000000', // 1 USDC
+    type: 'bridge',
+    tags: ['regression', 'bridge'],
+  },
+  {
+    name: 'USDC Ethereum to Avalanche bridge',
+    fromChain: CHAINS.ETHEREUM,
+    toChain: CHAINS.AVALANCHE,
+    fromToken: 'USDC',
+    toToken: 'USDC',
+    fromAmount: '1000000', // 1 USDC
+    type: 'bridge',
+    tags: ['regression', 'bridge'],
+  },
 
   // Same-chain swaps
   {
@@ -84,6 +114,36 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromToken: '0x0000000000000000000000000000000000000000', // Native token (POL/MATIC)
     toToken: 'USDC',
     fromAmount: '1000000000000000000', // 1 POL
+    type: 'swap',
+    tags: ['regression', 'swap'],
+  },
+  {
+    name: 'ETH to USDC swap on Optimism',
+    fromChain: CHAINS.OPTIMISM,
+    toChain: CHAINS.OPTIMISM,
+    fromToken: 'ETH',
+    toToken: 'USDC',
+    fromAmount: '100000000000000000', // 0.1 ETH
+    type: 'swap',
+    tags: ['regression', 'swap'],
+  },
+  {
+    name: 'ETH to USDC swap on Base',
+    fromChain: CHAINS.BASE,
+    toChain: CHAINS.BASE,
+    fromToken: 'ETH',
+    toToken: 'USDC',
+    fromAmount: '100000000000000000', // 0.1 ETH
+    type: 'swap',
+    tags: ['regression', 'swap'],
+  },
+  {
+    name: 'AVAX to USDC swap on Avalanche',
+    fromChain: CHAINS.AVALANCHE,
+    toChain: CHAINS.AVALANCHE,
+    fromToken: 'AVAX',
+    toToken: 'USDC',
+    fromAmount: '1000000000000000000', // 1 AVAX
     type: 'swap',
     tags: ['regression', 'swap'],
   },

@@ -20,36 +20,3 @@ export const CHAINS = {
 } as const;
 
 export type ChainId = (typeof CHAINS)[keyof typeof CHAINS];
-
-export const CHAIN_NAMES: Record<number, string> = {
-  [CHAINS.ETHEREUM]: 'Ethereum',
-  [CHAINS.POLYGON]: 'Polygon',
-  [CHAINS.ARBITRUM]: 'Arbitrum',
-  [CHAINS.BSC]: 'BSC',
-  [CHAINS.OPTIMISM]: 'Optimism',
-  [CHAINS.BASE]: 'Base',
-  [CHAINS.AVALANCHE]: 'Avalanche',
-  [CHAINS.SOLANA]: 'Solana',
-  [CHAINS.BITCOIN]: 'Bitcoin',
-  [CHAINS.SUI]: 'SUI',
-};
-
-export const CHAIN_TYPES = {
-  EVM: 'EVM',
-  SVM: 'SVM',
-  UTXO: 'UTXO',
-  MVM: 'MVM',
-} as const;
-
-export const CHAIN_TYPE_MAP: Record<number, string> = {
-  [CHAINS.ETHEREUM]: CHAIN_TYPES.EVM,
-  [CHAINS.POLYGON]: CHAIN_TYPES.EVM,
-  [CHAINS.ARBITRUM]: CHAIN_TYPES.EVM,
-  [CHAINS.BSC]: CHAIN_TYPES.EVM,
-  [CHAINS.OPTIMISM]: CHAIN_TYPES.EVM,
-  [CHAINS.BASE]: CHAIN_TYPES.EVM,
-  [CHAINS.AVALANCHE]: CHAIN_TYPES.EVM,
-  [CHAINS.SOLANA]: CHAIN_TYPES.SVM,
-  [CHAINS.BITCOIN]: CHAIN_TYPES.UTXO,
-  [CHAINS.SUI]: CHAIN_TYPES.MVM,
-};

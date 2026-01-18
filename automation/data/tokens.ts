@@ -105,18 +105,40 @@ export const TOKENS: Record<number, Record<string, TokenInfo>> = {
       decimals: 18,
     },
   },
+  [CHAINS.OPTIMISM]: {
+    ETH: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
+    },
+    USDC: {
+      symbol: 'USDC',
+      address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+      decimals: 6,
+    },
+  },
+  [CHAINS.BASE]: {
+    ETH: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
+    },
+    USDC: {
+      symbol: 'USDC',
+      address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+      decimals: 6,
+    },
+  },
+  [CHAINS.AVALANCHE]: {
+    AVAX: {
+      symbol: 'AVAX',
+      address: '0x0000000000000000000000000000000000000000',
+      decimals: 18,
+    },
+    USDC: {
+      symbol: 'USDC',
+      address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E',
+      decimals: 6,
+    },
+  },
 };
-
-/**
- * Helper to get token info by symbol and chain
- */
-export function getToken(chainId: number, symbol: string): TokenInfo | undefined {
-  return TOKENS[chainId]?.[symbol];
-}
-
-/**
- * Helper to format amount with decimals
- */
-export function toTokenAmount(amount: number, decimals: number): string {
-  return (amount * 10 ** decimals).toString();
-}

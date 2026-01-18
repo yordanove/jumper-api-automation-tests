@@ -7,6 +7,7 @@
 import { test, expect } from '@playwright/test';
 import { TEST_ADDRESSES } from '../../../data/test-addresses';
 import { CHAINS } from '../../../data/chains';
+import { TOKENS } from '../../../data/tokens';
 import { errorResponseSchema, ERROR_CODES } from '../../schemas/error.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
@@ -16,9 +17,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '0',
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -40,9 +41,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '-1000000',
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -61,9 +62,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     // Arrange - Omit fromChainId
     const requestBody = {
       fromAmount: '1000000',
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
     };
 
     // Act
@@ -83,9 +84,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     // Arrange - Omit fromAmount
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
     };
 
     // Act
@@ -104,9 +105,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '1000000',
-      fromTokenAddress: 'invalid-token-address',
+      fromTokenAddress: TEST_ADDRESSES.INVALID.NOT_HEX,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -131,9 +132,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     const requestBody = {
       fromChainId: 999999,
       fromAmount: '1000000',
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -177,9 +178,9 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
     const requestBody = {
       fromChainId: CHAINS.ETHEREUM,
       fromAmount: '1000000',
-      fromTokenAddress: '0x0000000000000000000000000000000000000001',
+      fromTokenAddress: '0x0000000000000000000000000000000000000001', // Non-existent token
       toChainId: CHAINS.POLYGON,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 

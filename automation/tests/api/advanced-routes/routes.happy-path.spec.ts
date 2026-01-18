@@ -9,6 +9,7 @@ import { test, expect } from '@playwright/test';
 import { HAPPY_PATH_PAIRS } from '../../../data/test-pairs';
 import { TEST_ADDRESSES } from '../../../data/test-addresses';
 import { TOKENS } from '../../../data/tokens';
+import { CHAINS } from '../../../data/chains';
 import { routesResponseSchema } from '../../schemas/routes.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
@@ -73,14 +74,14 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
     });
   }
 
-  test('@smoke @regression - Returns multiple routes with different tools', async ({ request }) => {
+  test('@smoke @regression - Returns at least one route with tool info', async ({ request }) => {
     // Arrange - Use popular bridge route
     const requestBody = {
-      fromChainId: 1, // Ethereum
+      fromChainId: CHAINS.ETHEREUM,
       fromAmount: '10000000', // 10 USDC
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
-      toChainId: 137, // Polygon
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', // USDC
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toChainId: CHAINS.POLYGON,
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -104,11 +105,11 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
   test('@regression - Routes include gas cost estimates', async ({ request }) => {
     // Arrange
     const requestBody = {
-      fromChainId: 1,
+      fromChainId: CHAINS.ETHEREUM,
       fromAmount: '5000000', // 5 USDC
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      toChainId: 42161, // Arbitrum
-      toTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toChainId: CHAINS.ARBITRUM,
+      toTokenAddress: TOKENS[CHAINS.ARBITRUM].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -130,11 +131,11 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
   test('@regression - Route steps have complete action and estimate', async ({ request }) => {
     // Arrange
     const requestBody = {
-      fromChainId: 1,
+      fromChainId: CHAINS.ETHEREUM,
       fromAmount: '1000000000000000000', // 1 ETH
-      fromTokenAddress: '0x0000000000000000000000000000000000000000', // ETH
-      toChainId: 1,
-      toTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC
+      fromTokenAddress: TEST_ADDRESSES.ZERO,
+      toChainId: CHAINS.ETHEREUM,
+      toTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
     };
 
@@ -168,11 +169,11 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
   test('@regression - Order parameter affects route sorting', async ({ request }) => {
     // Arrange - Test with CHEAPEST order
     const requestBody = {
-      fromChainId: 1,
+      fromChainId: CHAINS.ETHEREUM,
       fromAmount: '100000000', // 100 USDC
-      fromTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      toChainId: 137,
-      toTokenAddress: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      fromTokenAddress: TOKENS[CHAINS.ETHEREUM].USDC.address,
+      toChainId: CHAINS.POLYGON,
+      toTokenAddress: TOKENS[CHAINS.POLYGON].USDC.address,
       fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
       options: {
         order: 'CHEAPEST',

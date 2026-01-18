@@ -9,6 +9,7 @@
 import { test, expect } from '@playwright/test';
 import { HAPPY_PATH_PAIRS } from '../../../data/test-pairs';
 import { TEST_ADDRESSES } from '../../../data/test-addresses';
+import { CHAINS } from '../../../data/chains';
 import { quoteResponseSchema } from '../../schemas/quote.schema';
 import { validateSchema } from '../../../utils/schema-validator';
 
@@ -70,8 +71,8 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
   }) => {
     // Arrange - Use a simple same-chain swap
     const params = new URLSearchParams({
-      fromChain: '1', // Ethereum
-      toChain: '1',
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.ETHEREUM.toString(),
       fromToken: 'USDC',
       toToken: 'USDT',
       fromAmount: '1000000', // 1 USDC
@@ -94,8 +95,8 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
   test('@regression - Response includes gas cost estimates', async ({ request }) => {
     // Arrange
     const params = new URLSearchParams({
-      fromChain: '1',
-      toChain: '137',
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
       fromToken: 'USDC',
       toToken: 'USDC',
       fromAmount: '10000000', // 10 USDC
@@ -122,8 +123,8 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
   test('@regression - Response includes execution duration estimate', async ({ request }) => {
     // Arrange
     const params = new URLSearchParams({
-      fromChain: '1',
-      toChain: '42161', // Arbitrum
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.ARBITRUM.toString(),
       fromToken: 'USDC',
       toToken: 'USDC',
       fromAmount: '5000000', // 5 USDC
