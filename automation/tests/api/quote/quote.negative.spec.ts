@@ -336,4 +336,70 @@ test.describe('GET /v1/quote - Negative Tests @quote @negative', () => {
     expect(body.message.length, 'Error message should not be empty').toBeGreaterThan(0);
   });
 
+  // toAddress parameter tests
+  test('@regression @toAddress - Invalid toAddress format returns 400', async ({ request }) => {
+    // Arrange - Invalid recipient address format
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      toAddress: 'invalid-address',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for invalid toAddress').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+    expect(body.message, 'Error message should mention toAddress').toMatch(/toAddress/i);
+  });
+
+  test('@regression @toAddress - Short toAddress returns 400', async ({ request }) => {
+    // Arrange - Too short recipient address
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      toAddress: '0x1234',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for short toAddress').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+  });
+
+  // Order parameter tests
+  test('@regression @order - Invalid order value returns 400', async ({ request }) => {
+    // Arrange - Invalid order value (not FASTEST or CHEAPEST)
+    const params = new URLSearchParams({
+      fromChain: CHAINS.ETHEREUM.toString(),
+      toChain: CHAINS.POLYGON.toString(),
+      fromToken: 'USDC',
+      toToken: 'USDC',
+      fromAmount: '1000000',
+      fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
+      order: 'INVALID_ORDER',
+    });
+
+    // Act
+    const response = await request.get(`quote?${params}`);
+    const body = await response.json();
+
+    // Assert
+    expect(response.status(), 'Should return 400 for invalid order').toBe(400);
+    expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
+  });
+
 });
