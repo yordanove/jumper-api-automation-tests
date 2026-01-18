@@ -1,5 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
+// Normalize API_BASE_URL to ensure trailing slash
+const baseUrl = (() => {
+  const url = process.env.API_BASE_URL || 'https://li.quest/v1/';
+  return url.endsWith('/') ? url : `${url}/`;
+})();
+
 export default defineConfig({
   testDir: './automation/tests',
 
@@ -20,7 +26,7 @@ export default defineConfig({
         outputFolder: 'allure-results',
         suiteTitle: true,
         environmentInfo: {
-          'Base URL': process.env.API_BASE_URL || 'https://li.quest/v1',
+          'Base URL': baseUrl,
           'Node Version': process.version,
           'Test Environment': process.env.TEST_ENV || 'production',
         },
@@ -36,7 +42,7 @@ export default defineConfig({
 
   // Use configuration for API testing
   use: {
-    baseURL: process.env.API_BASE_URL || 'https://li.quest/v1/',
+    baseURL: baseUrl,
     extraHTTPHeaders: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

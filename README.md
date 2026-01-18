@@ -108,6 +108,7 @@ K6_SCENARIO=stress npm run perf:quote
 │   │   ├── api/
 │   │   │   ├── quote/           # Quote endpoint tests
 │   │   │   ├── advanced-routes/ # Routes endpoint tests
+│   │   │   ├── tokens/          # Token endpoint tests
 │   │   │   └── tools/           # Tools endpoint tests
 │   │   └── schemas/             # JSON schemas for validation
 │   ├── data/                    # Test data (chains, tokens, pairs)
@@ -127,9 +128,9 @@ K6_SCENARIO=stress npm run perf:quote
 
 | Endpoint | Happy Path | Negative | Performance |
 |----------|------------|----------|-------------|
-| GET /v1/quote | 9 tests | 18 tests | Yes |
-| POST /v1/advanced/routes | 5 tests | 8 tests | Yes |
-| GET /v1/tools | 8 tests | 7 tests | Yes |
+| GET /v1/quote | 15 tests | 17 tests | Yes |
+| POST /v1/advanced/routes | 16 tests | 8 tests | Yes |
+| GET /v1/tools | 10 tests | 7 tests | Yes |
 | GET /v1/tokens | 5 tests | 3 tests | No |
 | GET /v1/token | 6 tests | 7 tests | No |
 
@@ -155,7 +156,7 @@ Tests run automatically via GitHub Actions:
 
 ### Manual Trigger
 You can manually trigger workflows from GitHub Actions with different test types:
-- all, smoke, regression, quote, routes, tools
+- all, smoke, regression, quote, routes, tools, tokens
 
 ## Configuration
 

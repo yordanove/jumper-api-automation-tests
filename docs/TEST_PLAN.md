@@ -136,7 +136,7 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 |----|-----------|-----------------|----------|
 | T-NEG-001 | Invalid chain ID | Empty results or error | P1 |
 | T-NEG-002 | Invalid chain format | Handles gracefully | P2 |
-| T-NEG-003 | Empty chains parameter | Returns all tools | P2 |
+| T-NEG-003 | Empty chains parameter | 400 error (code 1011) | P2 |
 | T-NEG-004 | Very large chain ID | Handles gracefully | P2 |
 | T-NEG-005 | Negative chain ID | Error or empty | P2 |
 | T-NEG-006 | Mixed valid/invalid chains | Handles gracefully | P2 |
@@ -159,7 +159,7 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | ID | Test Case | Expected Result | Priority |
 |----|-----------|-----------------|----------|
 | TKS-NEG-001 | Invalid chain ID | Empty results or error | P1 |
-| TKS-NEG-002 | Non-numeric chain ID | 400 | P1 |
+| TKS-NEG-002 | Non-numeric chain ID | 400 or 404 | P1 |
 | TKS-NEG-003 | Negative chain ID | Error or empty | P2 |
 
 ### 3.5 GET /v1/token (Token Details & Price)

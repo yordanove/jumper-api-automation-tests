@@ -19,6 +19,7 @@ on:
           - quote
           - routes
           - tools
+          - tokens
 
 env:
   API_BASE_URL: https://li.quest/v1/
@@ -62,6 +63,8 @@ jobs:
             npm run test:routes
           elif [ "${{ github.event.inputs.test_type }}" == "tools" ]; then
             npm run test:tools
+          elif [ "${{ github.event.inputs.test_type }}" == "tokens" ]; then
+            npm run test:tokens
           else
             npm test
           fi
