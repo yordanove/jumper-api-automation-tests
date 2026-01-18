@@ -1,1 +1,1 @@
-[{"values":["https://li.quest/v1"],"name":"Base URL"},{"values":["v20.19.6"],"name":"Node Version"},{"values":["production"],"name":"Test Environment"}]
+[{"values":["https://li.quest/v1/"],"name":"Base URL"},{"values":["v20.19.6"],"name":"Node Version"},{"values":["production"],"name":"Test Environment"}]
