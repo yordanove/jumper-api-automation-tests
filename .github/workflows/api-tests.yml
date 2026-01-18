@@ -21,7 +21,7 @@ on:
           - tools
 
 env:
-  API_BASE_URL: https://li.quest/v1
+  API_BASE_URL: https://li.quest/v1/
   NODE_VERSION: '20'
 
 permissions:
