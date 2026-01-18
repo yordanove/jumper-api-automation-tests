@@ -17,7 +17,8 @@ export const options = {
   },
   thresholds: {
     ...thresholds,
-    'http_req_duration{endpoint:quote}': ['p(95)<3000'], // Quote-specific threshold
+    // Quote endpoint: P95 < 3s, P99 < 5s
+    'http_req_duration{endpoint:quote}': ['p(95)<3000', 'p(99)<5000'],
   },
 };
 

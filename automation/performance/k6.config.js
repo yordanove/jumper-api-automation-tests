@@ -43,11 +43,9 @@ export const scenarios = {
 };
 
 export const thresholds = {
-  // Response time thresholds
-  http_req_duration: ['p(95)<3000', 'p(99)<5000'], // 95% under 3s, 99% under 5s
-
-  // Error rate threshold
+  // Error rate threshold (applies to all endpoints)
   http_req_failed: ['rate<0.05'], // Less than 5% errors
+  // Note: Response time thresholds are endpoint-specific (defined in each scenario file)
 };
 
 export const BASE_URL = 'https://li.quest/v1';

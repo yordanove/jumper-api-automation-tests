@@ -17,7 +17,8 @@ export const options = {
   },
   thresholds: {
     ...thresholds,
-    'http_req_duration{endpoint:routes}': ['p(95)<5000'], // Routes can be slower
+    // Routes endpoint: P95 < 5s, P99 < 8s (slower due to route computation)
+    'http_req_duration{endpoint:routes}': ['p(95)<5000', 'p(99)<8000'],
   },
 };
 

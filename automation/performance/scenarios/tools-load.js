@@ -17,7 +17,8 @@ export const options = {
   },
   thresholds: {
     ...thresholds,
-    'http_req_duration{endpoint:tools}': ['p(95)<2000'], // Tools should be fast
+    // Tools endpoint: P95 < 2s, P99 < 3s (fast, read-only endpoint)
+    'http_req_duration{endpoint:tools}': ['p(95)<2000', 'p(99)<3000'],
   },
 };
 
