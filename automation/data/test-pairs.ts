@@ -139,8 +139,8 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     name: 'POL to USDC swap on Polygon',
     fromChain: CHAINS.POLYGON,
     toChain: CHAINS.POLYGON,
-    fromToken: 'MATIC',
-    fromTokenAddress: getTokenAddress(CHAINS.POLYGON, 'MATIC'),
+    fromToken: 'POL',
+    fromTokenAddress: getTokenAddress(CHAINS.POLYGON, 'POL'),
     toToken: 'USDC',
     toTokenAddress: getTokenAddress(CHAINS.POLYGON, 'USDC'),
     fromAmount: '1000000000000000000', // 1 POL

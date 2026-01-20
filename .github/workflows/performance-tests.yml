@@ -1,9 +1,6 @@
 name: Performance Tests
 
 on:
-  schedule:
-    # Run every weekday at 6 AM UTC
-    - cron: '0 6 * * 1-5'
   workflow_dispatch:
     inputs:
       scenario:

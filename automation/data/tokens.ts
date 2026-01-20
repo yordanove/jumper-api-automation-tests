@@ -40,8 +40,8 @@ export const TOKENS: Record<number, Record<string, TokenInfo>> = {
     },
   },
   [CHAINS.POLYGON]: {
-    MATIC: {
-      symbol: 'MATIC',
+    POL: {
+      symbol: 'POL',
       address: '0x0000000000000000000000000000000000000000',
       decimals: 18,
     },

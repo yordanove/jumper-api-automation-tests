@@ -140,7 +140,6 @@ npm run typecheck
 │   │   └── schemas/             # JSON schemas for validation
 │   ├── data/                    # Test data (chains, tokens, pairs)
 │   ├── utils/                   # Utilities (API client, validators)
-│   ├── fixtures/                # Playwright fixtures
 │   └── performance/             # k6 load test scripts
 ├── docs/
 │   └── TEST_PLAN.md             # Comprehensive test plan
@@ -182,7 +181,7 @@ Tests run automatically via GitHub Actions:
 
 - **On Push/PR** - Full test suite runs
 - **On Main** - Allure report deployed to GitHub Pages
-- **Scheduled** - Performance tests run weekly
+- **Performance** - Run manually via workflow dispatch
 
 ### Manual Trigger
 

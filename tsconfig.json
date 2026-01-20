@@ -15,8 +15,7 @@
     "paths": {
       "@data/*": ["automation/data/*"],
       "@utils/*": ["automation/utils/*"],
-      "@schemas/*": ["automation/tests/schemas/*"],
-      "@fixtures/*": ["automation/fixtures/*"]
+      "@schemas/*": ["automation/tests/schemas/*"]
     }
   },
   "include": ["automation/**/*.ts", "playwright.config.ts"],
