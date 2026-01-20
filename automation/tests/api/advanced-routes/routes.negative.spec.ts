@@ -174,6 +174,8 @@ test.describe('POST /v1/advanced/routes - Negative Tests @routes @negative', () 
 
     expect(response.status(), 'Should return 400 for non-existent token').toBe(400);
     expect(body.code, 'Should return ValidationError code').toBe(ERROR_CODES.VALIDATION_ERROR);
-    expect(body.message, 'Error message should mention invalid token').toMatch(/invalid|deny list/i);
+    expect(body.message, 'Error message should mention invalid token').toMatch(
+      /invalid|deny list/i
+    );
   });
 });

@@ -40,8 +40,14 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
     expect(firstBridge.name.length, 'bridge.name should not be empty').toBeGreaterThan(0);
     expect(typeof firstBridge.logoURI, 'bridge.logoURI should be a string').toBe('string');
     expect(firstBridge.logoURI.length, 'bridge.logoURI should not be empty').toBeGreaterThan(0);
-    expect(Array.isArray(firstBridge.supportedChains), 'bridge.supportedChains should be an array').toBe(true);
-    expect(firstBridge.supportedChains.length, 'bridge.supportedChains should not be empty').toBeGreaterThan(0);
+    expect(
+      Array.isArray(firstBridge.supportedChains),
+      'bridge.supportedChains should be an array'
+    ).toBe(true);
+    expect(
+      firstBridge.supportedChains.length,
+      'bridge.supportedChains should not be empty'
+    ).toBeGreaterThan(0);
 
     // Bridge supportedChains contain fromChainId/toChainId pairs
     const chainPair = firstBridge.supportedChains[0];
@@ -64,8 +70,14 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
     expect(firstExchange.name.length, 'exchange.name should not be empty').toBeGreaterThan(0);
     expect(typeof firstExchange.logoURI, 'exchange.logoURI should be a string').toBe('string');
     expect(firstExchange.logoURI.length, 'exchange.logoURI should not be empty').toBeGreaterThan(0);
-    expect(Array.isArray(firstExchange.supportedChains), 'exchange.supportedChains should be an array').toBe(true);
-    expect(firstExchange.supportedChains.length, 'exchange.supportedChains should not be empty').toBeGreaterThan(0);
+    expect(
+      Array.isArray(firstExchange.supportedChains),
+      'exchange.supportedChains should be an array'
+    ).toBe(true);
+    expect(
+      firstExchange.supportedChains.length,
+      'exchange.supportedChains should not be empty'
+    ).toBeGreaterThan(0);
 
     // Exchange supportedChains is a flat array of chain IDs
     expect(
@@ -97,9 +109,8 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
               pair.fromChainId === chain.chainId || pair.toChainId === chain.chainId
           )
       );
-      const hasSupportingExchange = body.exchanges.some(
-        (exchange: { supportedChains: number[] }) =>
-          exchange.supportedChains.includes(chain.chainId)
+      const hasSupportingExchange = body.exchanges.some((exchange: { supportedChains: number[] }) =>
+        exchange.supportedChains.includes(chain.chainId)
       );
       expect(
         hasSupportingBridge || hasSupportingExchange,
@@ -174,7 +185,10 @@ test.describe('GET /v1/tools - Happy Path @tools @happy-path', () => {
         exchange.supportedChains.includes(CHAINS.ETHEREUM) ||
         exchange.supportedChains.includes(CHAINS.POLYGON)
     );
-    expect(supportedExchange, 'At least one exchange should support filtered chains').not.toBeUndefined();
+    expect(
+      supportedExchange,
+      'At least one exchange should support filtered chains'
+    ).not.toBeUndefined();
     expect(typeof supportedExchange.key, 'supportedExchange.key should be a string').toBe('string');
   });
 });

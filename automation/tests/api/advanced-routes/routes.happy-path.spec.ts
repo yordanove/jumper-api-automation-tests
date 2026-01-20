@@ -54,7 +54,9 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
       expect(firstRoute.fromChainId, 'route.fromChainId should match request').toBe(pair.fromChain);
       expect(firstRoute.toChainId, 'route.toChainId should match request').toBe(pair.toChain);
       expect(typeof firstRoute.fromAmount, 'route.fromAmount should be a string').toBe('string');
-      expect(firstRoute.fromAmount.length, 'route.fromAmount should not be empty').toBeGreaterThan(0);
+      expect(firstRoute.fromAmount.length, 'route.fromAmount should not be empty').toBeGreaterThan(
+        0
+      );
       expect(typeof firstRoute.toAmount, 'route.toAmount should be a string').toBe('string');
       expect(firstRoute.toAmount.length, 'route.toAmount should not be empty').toBeGreaterThan(0);
 
@@ -138,8 +140,13 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
     expect(typeof firstStep.action, 'step.action should be an object').toBe('object');
     expect(typeof firstStep.estimate, 'step.estimate should be an object').toBe('object');
 
-    expect(typeof firstStep.estimate.toAmount, 'estimate.toAmount should be a string').toBe('string');
-    expect(firstStep.estimate.toAmount.length, 'estimate.toAmount should not be empty').toBeGreaterThan(0);
+    expect(typeof firstStep.estimate.toAmount, 'estimate.toAmount should be a string').toBe(
+      'string'
+    );
+    expect(
+      firstStep.estimate.toAmount.length,
+      'estimate.toAmount should not be empty'
+    ).toBeGreaterThan(0);
   });
 
   test('@regression - Order parameter affects route sorting', async ({ request }) => {

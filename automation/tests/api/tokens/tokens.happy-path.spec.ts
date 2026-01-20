@@ -29,7 +29,10 @@ test.describe('GET /v1/tokens - Token Search @tokens @happy-path', () => {
     expect(schemaResult.valid, `Schema validation failed: ${schemaResult.errors}`).toBe(true);
 
     expect(typeof body.tokens, 'tokens should be an object').toBe('object');
-    expect(Array.isArray(body.tokens[CHAINS.ETHEREUM.toString()]), 'Should have tokens array for Ethereum').toBe(true);
+    expect(
+      Array.isArray(body.tokens[CHAINS.ETHEREUM.toString()]),
+      'Should have tokens array for Ethereum'
+    ).toBe(true);
     expect(
       body.tokens[CHAINS.ETHEREUM.toString()].length,
       'Should have at least one token'
@@ -45,10 +48,22 @@ test.describe('GET /v1/tokens - Token Search @tokens @happy-path', () => {
     const body = await response.json();
 
     expect(response.status()).toBe(200);
-    expect(Array.isArray(body.tokens[CHAINS.ETHEREUM.toString()]), 'Should have Ethereum tokens array').toBe(true);
-    expect(body.tokens[CHAINS.ETHEREUM.toString()].length, 'Ethereum tokens should not be empty').toBeGreaterThan(0);
-    expect(Array.isArray(body.tokens[CHAINS.POLYGON.toString()]), 'Should have Polygon tokens array').toBe(true);
-    expect(body.tokens[CHAINS.POLYGON.toString()].length, 'Polygon tokens should not be empty').toBeGreaterThan(0);
+    expect(
+      Array.isArray(body.tokens[CHAINS.ETHEREUM.toString()]),
+      'Should have Ethereum tokens array'
+    ).toBe(true);
+    expect(
+      body.tokens[CHAINS.ETHEREUM.toString()].length,
+      'Ethereum tokens should not be empty'
+    ).toBeGreaterThan(0);
+    expect(
+      Array.isArray(body.tokens[CHAINS.POLYGON.toString()]),
+      'Should have Polygon tokens array'
+    ).toBe(true);
+    expect(
+      body.tokens[CHAINS.POLYGON.toString()].length,
+      'Polygon tokens should not be empty'
+    ).toBeGreaterThan(0);
   });
 
   test('@regression - Token objects have required properties', async ({ request }) => {
@@ -83,9 +98,7 @@ test.describe('GET /v1/tokens - Token Search @tokens @happy-path', () => {
     expect(response.status()).toBe(200);
 
     const tokens = body.tokens[CHAINS.ETHEREUM.toString()];
-    const ethToken = tokens.find(
-      (t: { address: string }) => t.address === TEST_ADDRESSES.ZERO
-    );
+    const ethToken = tokens.find((t: { address: string }) => t.address === TEST_ADDRESSES.ZERO);
     expect(ethToken, 'Should find ETH token').toBeDefined();
     expect(ethToken.priceUSD, 'ETH should have priceUSD').toBeDefined();
     expect(typeof ethToken.priceUSD, 'priceUSD should be a string').toBe('string');
@@ -103,7 +116,10 @@ test.describe('GET /v1/tokens - Token Search @tokens @happy-path', () => {
     const body = await response.json();
 
     expect(response.status()).toBe(200);
-    expect(Array.isArray(body.tokens[CHAINS.SOLANA.toString()]), 'Should have Solana tokens array').toBe(true);
+    expect(
+      Array.isArray(body.tokens[CHAINS.SOLANA.toString()]),
+      'Should have Solana tokens array'
+    ).toBe(true);
     expect(
       body.tokens[CHAINS.SOLANA.toString()].length,
       'Should have at least one Solana token'

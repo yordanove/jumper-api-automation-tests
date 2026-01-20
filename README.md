@@ -35,11 +35,13 @@ npx playwright install
 ## Running Tests
 
 ### All Tests
+
 ```bash
 npm test
 ```
 
 ### By Endpoint
+
 ```bash
 npm run test:quote    # Quote endpoint tests
 npm run test:routes   # Routes endpoint tests
@@ -48,6 +50,7 @@ npm run test:tokens   # Token search/price tests
 ```
 
 ### By Test Type
+
 ```bash
 npm run test:smoke      # Quick validation tests
 npm run test:regression # Full regression suite
@@ -56,6 +59,7 @@ npm run test:negative   # Negative tests only
 ```
 
 ### By Tag
+
 ```bash
 npx playwright test --grep "@smoke"
 npx playwright test --grep "@bridge"
@@ -65,6 +69,7 @@ npx playwright test --grep "@swap"
 ## Test Reports
 
 ### Generate Allure Report
+
 ```bash
 # Generate and open report
 npm run report
@@ -74,6 +79,7 @@ npm run report:generate
 ```
 
 ### View Playwright Report
+
 ```bash
 npx playwright show-report
 ```
@@ -81,6 +87,7 @@ npx playwright show-report
 ## Performance Testing
 
 ### Run k6 Load Tests
+
 ```bash
 # Individual endpoints
 npm run perf:quote
@@ -92,12 +99,32 @@ npm run perf:all
 ```
 
 ### k6 Scenarios
+
 - **smoke** - 1 VU, 30s - Basic functionality check
 - **load** - 5-10 VUs, 9 min - Typical load
 - **stress** - 20-50 VUs, 16 min - Find breaking points
 
 ```bash
 K6_SCENARIO=stress npm run perf:quote
+```
+
+## Code Quality
+
+```bash
+# Run ESLint
+npm run lint
+
+# Fix ESLint issues
+npm run lint:fix
+
+# Check formatting
+npm run format:check
+
+# Fix formatting
+npm run format
+
+# Type check
+npm run typecheck
 ```
 
 ## Project Structure
@@ -126,28 +153,28 @@ K6_SCENARIO=stress npm run perf:quote
 
 ### Endpoints Tested
 
-| Endpoint | Happy Path | Negative | Performance |
-|----------|------------|----------|-------------|
-| GET /v1/quote | 18 tests | 17 tests | Yes |
-| POST /v1/advanced/routes | 16 tests | 8 tests | Yes |
-| GET /v1/tools | 10 tests | 7 tests | Yes |
-| GET /v1/tokens | 5 tests | 3 tests | No |
-| GET /v1/token | 6 tests | 7 tests | No |
+| Endpoint                 | Happy Path | Negative | Performance |
+| ------------------------ | ---------- | -------- | ----------- |
+| GET /v1/quote            | 18 tests   | 17 tests | Yes         |
+| POST /v1/advanced/routes | 16 tests   | 8 tests  | Yes         |
+| GET /v1/tools            | 10 tests   | 7 tests  | Yes         |
+| GET /v1/tokens           | 5 tests    | 3 tests  | No          |
+| GET /v1/token            | 6 tests    | 7 tests  | No          |
 
 ### Chains Covered
 
-| Chain | Type | Chain ID |
-|-------|------|----------|
-| Ethereum | EVM | 1 |
-| Polygon | EVM | 137 |
-| Arbitrum | EVM | 42161 |
-| BSC | EVM | 56 |
-| Optimism | EVM | 10 |
-| Base | EVM | 8453 |
-| Avalanche | EVM | 43114 |
-| Solana | SVM | 1151111081099710 |
-| Bitcoin | UTXO | 20000000000001 |
-| SUI | MVM | 9270000000000000 |
+| Chain     | Type | Chain ID         |
+| --------- | ---- | ---------------- |
+| Ethereum  | EVM  | 1                |
+| Polygon   | EVM  | 137              |
+| Arbitrum  | EVM  | 42161            |
+| BSC       | EVM  | 56               |
+| Optimism  | EVM  | 10               |
+| Base      | EVM  | 8453             |
+| Avalanche | EVM  | 43114            |
+| Solana    | SVM  | 1151111081099710 |
+| Bitcoin   | UTXO | 20000000000001   |
+| SUI       | MVM  | 9270000000000000 |
 
 ## CI/CD
 
@@ -158,21 +185,24 @@ Tests run automatically via GitHub Actions:
 - **Scheduled** - Performance tests run weekly
 
 ### Manual Trigger
+
 You can manually trigger workflows from GitHub Actions with different test types:
+
 - all, smoke, regression, quote, routes, tools, tokens
 
 ## Configuration
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable       | Description        | Default              |
+| -------------- | ------------------ | -------------------- |
 | `API_BASE_URL` | LI.FI API base URL | https://li.quest/v1/ |
-| `TEST_ENV` | Environment name | production |
+| `TEST_ENV`     | Environment name   | production           |
 
 ### Playwright Config
 
 Key settings in `playwright.config.ts`:
+
 - **Parallel execution** enabled
 - **2 retries** in CI
 - **60s timeout** per test
@@ -183,6 +213,7 @@ Key settings in `playwright.config.ts`:
 Test pairs are defined in `automation/data/test-pairs.ts` (12 pairs total):
 
 **Bridge scenarios (6):**
+
 - USDC: Ethereum → Polygon
 - USDC: Polygon → Arbitrum
 - USDT: BSC → Ethereum
@@ -191,6 +222,7 @@ Test pairs are defined in `automation/data/test-pairs.ts` (12 pairs total):
 - USDC: Ethereum → Avalanche
 
 **Swap scenarios (6):**
+
 - ETH → USDC on Ethereum
 - USDC → USDT on Ethereum
 - POL → USDC on Polygon
@@ -234,14 +266,17 @@ export const CHAINS = {
 ## Troubleshooting
 
 ### Tests Timing Out
+
 - Increase timeout in `playwright.config.ts`
 - Check network connectivity to `li.quest`
 
 ### Schema Validation Failures
+
 - API may have added new fields (ok if `additionalProperties: true`)
 - Check for breaking schema changes in API docs
 
 ### Performance Tests Failing
+
 - Ensure k6 is installed: `k6 version`
 - Check rate limits aren't being hit
 

@@ -54,7 +54,9 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
       expect(typeof body.toolDetails.key, 'toolDetails.key should be a string').toBe('string');
       expect(body.toolDetails.key.length, 'toolDetails.key should not be empty').toBeGreaterThan(0);
       expect(typeof body.toolDetails.name, 'toolDetails.name should be a string').toBe('string');
-      expect(body.toolDetails.name.length, 'toolDetails.name should not be empty').toBeGreaterThan(0);
+      expect(body.toolDetails.name.length, 'toolDetails.name should not be empty').toBeGreaterThan(
+        0
+      );
     });
   }
 
@@ -75,10 +77,20 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
 
     expect(response.status()).toBe(200);
     expect(typeof body.transactionRequest, 'transactionRequest should be an object').toBe('object');
-    expect(typeof body.transactionRequest.to, 'transactionRequest.to should be a string').toBe('string');
-    expect(body.transactionRequest.to.startsWith('0x'), 'transactionRequest.to should be a hex address').toBe(true);
-    expect(typeof body.transactionRequest.data, 'transactionRequest.data should be a string').toBe('string');
-    expect(body.transactionRequest.data.startsWith('0x'), 'transactionRequest.data should be hex data').toBe(true);
+    expect(typeof body.transactionRequest.to, 'transactionRequest.to should be a string').toBe(
+      'string'
+    );
+    expect(
+      body.transactionRequest.to.startsWith('0x'),
+      'transactionRequest.to should be a hex address'
+    ).toBe(true);
+    expect(typeof body.transactionRequest.data, 'transactionRequest.data should be a string').toBe(
+      'string'
+    );
+    expect(
+      body.transactionRequest.data.startsWith('0x'),
+      'transactionRequest.data should be hex data'
+    ).toBe(true);
   });
 
   test('@regression - Response includes gas cost estimates', async ({ request }) => {
@@ -120,8 +132,12 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
     const body = await response.json();
 
     expect(response.status()).toBe(200);
-    expect(typeof body.estimate.executionDuration, 'executionDuration should be a number').toBe('number');
-    expect(body.estimate.executionDuration, 'executionDuration should be positive').toBeGreaterThan(0);
+    expect(typeof body.estimate.executionDuration, 'executionDuration should be a number').toBe(
+      'number'
+    );
+    expect(body.estimate.executionDuration, 'executionDuration should be positive').toBeGreaterThan(
+      0
+    );
   });
 
   test('@regression @slippage - Quote with custom slippage parameter', async ({ request }) => {
@@ -176,9 +192,8 @@ test.describe('GET /v1/quote - Happy Path @quote @happy-path', () => {
     const body = await response.json();
 
     expect(response.status()).toBe(200);
-    expect(
-      body.action.toAddress.toLowerCase(),
-      'toAddress should be reflected in response'
-    ).toBe(TEST_ADDRESSES.EVM_DEFAULT.toLowerCase());
+    expect(body.action.toAddress.toLowerCase(), 'toAddress should be reflected in response').toBe(
+      TEST_ADDRESSES.EVM_DEFAULT.toLowerCase()
+    );
   });
 });

@@ -27,7 +27,16 @@ export const routeStepSchema = {
 
 export const routeSchema = {
   type: 'object',
-  required: ['id', 'fromChainId', 'fromAmount', 'fromToken', 'toChainId', 'toAmount', 'toToken', 'steps'],
+  required: [
+    'id',
+    'fromChainId',
+    'fromAmount',
+    'fromToken',
+    'toChainId',
+    'toAmount',
+    'toToken',
+    'steps',
+  ],
   properties: {
     id: { type: 'string' },
     fromChainId: { type: 'number' },
