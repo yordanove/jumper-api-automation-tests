@@ -281,4 +281,4 @@ export const CHAINS = {
 
 ## Author
 
-Emil Yordanov - LI.FI QA Engineer Interview Assessment
+Emil Yordanov
