@@ -18,17 +18,12 @@ test.describe('POST /v1/advanced/routes - Happy Path @routes @happy-path', () =>
     const tags = pair.tags.map((t) => `@${t}`).join(' ');
 
     test(`${tags} - ${pair.name}`, async ({ request }) => {
-      const fromTokenInfo = TOKENS[pair.fromChain]?.[pair.fromToken];
-      const toTokenInfo = TOKENS[pair.toChain]?.[pair.toToken];
-      const fromTokenAddress = fromTokenInfo?.address || pair.fromToken;
-      const toTokenAddress = toTokenInfo?.address || pair.toToken;
-
       const requestBody = {
         fromChainId: pair.fromChain,
         fromAmount: pair.fromAmount,
-        fromTokenAddress: fromTokenAddress,
+        fromTokenAddress: pair.fromTokenAddress,
         toChainId: pair.toChain,
-        toTokenAddress: toTokenAddress,
+        toTokenAddress: pair.toTokenAddress,
         fromAddress: TEST_ADDRESSES.EVM_DEFAULT,
         options: {
           slippage: 0.03, // 3% slippage

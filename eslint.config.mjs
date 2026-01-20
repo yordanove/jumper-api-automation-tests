@@ -26,6 +26,9 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'playwright/no-focused-test': 'error',
       'playwright/no-skipped-test': 'warn',
+      // Disabled for API tests - conditionals are often needed for optional response fields
+      'playwright/no-conditional-in-test': 'off',
+      'playwright/no-conditional-expect': 'off',
     },
   },
   prettier

@@ -3,14 +3,26 @@
  */
 
 import { CHAINS } from './chains';
+import { TOKENS } from './tokens';
 import { TEST_ADDRESSES } from './test-addresses';
+
+/**
+ * Resolve token address from TOKENS registry.
+ * Falls back to the symbol if not found (for direct address usage).
+ */
+function getTokenAddress(chainId: number, symbol: string): string {
+  const tokenInfo = TOKENS[chainId]?.[symbol];
+  return tokenInfo?.address ?? symbol;
+}
 
 export interface TestPair {
   name: string;
   fromChain: number;
   toChain: number;
   fromToken: string;
+  fromTokenAddress: string;
   toToken: string;
+  toTokenAddress: string;
   fromAmount: string;
   type: 'swap' | 'bridge';
   tags: string[];
@@ -30,7 +42,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.POLYGON,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.POLYGON, 'USDC'),
     fromAmount: '1000000', // 1 USDC (6 decimals)
     type: 'bridge',
     tags: ['smoke', 'regression', 'bridge'],
@@ -40,7 +54,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.POLYGON,
     toChain: CHAINS.ARBITRUM,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.POLYGON, 'USDC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.ARBITRUM, 'USDC'),
     fromAmount: '1000000', // 1 USDC
     type: 'bridge',
     tags: ['regression', 'bridge'],
@@ -50,7 +66,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.BSC,
     toChain: CHAINS.ETHEREUM,
     fromToken: 'USDT',
+    fromTokenAddress: getTokenAddress(CHAINS.BSC, 'USDT'),
     toToken: 'USDT',
+    toTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDT'),
     fromAmount: '1000000000000000000', // 1 USDT (18 decimals on BSC)
     type: 'bridge',
     tags: ['regression', 'bridge'],
@@ -60,7 +78,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.OPTIMISM,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.OPTIMISM, 'USDC'),
     fromAmount: '1000000', // 1 USDC
     type: 'bridge',
     tags: ['regression', 'bridge'],
@@ -70,7 +90,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.BASE,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.BASE, 'USDC'),
     fromAmount: '1000000', // 1 USDC
     type: 'bridge',
     tags: ['regression', 'bridge'],
@@ -80,7 +102,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.AVALANCHE,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.AVALANCHE, 'USDC'),
     fromAmount: '1000000', // 1 USDC
     type: 'bridge',
     tags: ['regression', 'bridge'],
@@ -92,7 +116,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.ETHEREUM,
     fromToken: 'ETH',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'ETH'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     fromAmount: '100000000000000000', // 0.1 ETH
     type: 'swap',
     tags: ['smoke', 'regression', 'swap'],
@@ -102,7 +128,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.ETHEREUM,
     toChain: CHAINS.ETHEREUM,
     fromToken: 'USDC',
+    fromTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDC'),
     toToken: 'USDT',
+    toTokenAddress: getTokenAddress(CHAINS.ETHEREUM, 'USDT'),
     fromAmount: '10000000', // 10 USDC
     type: 'swap',
     tags: ['regression', 'swap'],
@@ -111,8 +139,10 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     name: 'POL to USDC swap on Polygon',
     fromChain: CHAINS.POLYGON,
     toChain: CHAINS.POLYGON,
-    fromToken: '0x0000000000000000000000000000000000000000', // Native token (POL/MATIC)
+    fromToken: 'MATIC',
+    fromTokenAddress: getTokenAddress(CHAINS.POLYGON, 'MATIC'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.POLYGON, 'USDC'),
     fromAmount: '1000000000000000000', // 1 POL
     type: 'swap',
     tags: ['regression', 'swap'],
@@ -122,7 +152,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.OPTIMISM,
     toChain: CHAINS.OPTIMISM,
     fromToken: 'ETH',
+    fromTokenAddress: getTokenAddress(CHAINS.OPTIMISM, 'ETH'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.OPTIMISM, 'USDC'),
     fromAmount: '100000000000000000', // 0.1 ETH
     type: 'swap',
     tags: ['regression', 'swap'],
@@ -132,7 +164,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.BASE,
     toChain: CHAINS.BASE,
     fromToken: 'ETH',
+    fromTokenAddress: getTokenAddress(CHAINS.BASE, 'ETH'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.BASE, 'USDC'),
     fromAmount: '100000000000000000', // 0.1 ETH
     type: 'swap',
     tags: ['regression', 'swap'],
@@ -142,7 +176,9 @@ export const HAPPY_PATH_PAIRS: TestPair[] = [
     fromChain: CHAINS.AVALANCHE,
     toChain: CHAINS.AVALANCHE,
     fromToken: 'AVAX',
+    fromTokenAddress: getTokenAddress(CHAINS.AVALANCHE, 'AVAX'),
     toToken: 'USDC',
+    toTokenAddress: getTokenAddress(CHAINS.AVALANCHE, 'USDC'),
     fromAmount: '1000000000000000000', // 1 AVAX
     type: 'swap',
     tags: ['regression', 'swap'],
