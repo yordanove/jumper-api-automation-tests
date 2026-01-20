@@ -112,26 +112,26 @@ _Data-driven tests use 12 token pairs (6 bridge + 6 swap) from Section 2.3._
 
 _Data-driven tests use 12 token pairs (6 bridge + 6 swap) from Section 2.3._
 
-| ID       | Test Case                         | Priority | Tags        |
-| -------- | --------------------------------- | -------- | ----------- |
-| R-HP-001 | 12 token pair routes (data-driven)| P0/P1    | @smoke/@regression |
-| R-HP-002 | Returns at least one route        | P1       | @regression |
-| R-HP-003 | Routes include gas cost estimates | P1       | @regression |
-| R-HP-004 | Route steps have complete data    | P1       | @regression |
-| R-HP-005 | Order parameter affects sorting   | P2       | @regression |
+| ID       | Test Case                          | Priority | Tags               |
+| -------- | ---------------------------------- | -------- | ------------------ |
+| R-HP-001 | 12 token pair routes (data-driven) | P0/P1    | @smoke/@regression |
+| R-HP-002 | Returns at least one route         | P1       | @regression        |
+| R-HP-003 | Routes include gas cost estimates  | P1       | @regression        |
+| R-HP-004 | Route steps have complete data     | P1       | @regression        |
+| R-HP-005 | Order parameter affects sorting    | P2       | @regression        |
 
 #### Negative Tests
 
-| ID        | Test Case               | Expected Result       | Priority |
-| --------- | ----------------------- | --------------------- | -------- |
-| R-NEG-001 | Zero amount             | 400                   | P0       |
-| R-NEG-002 | Negative amount         | 400                   | P0       |
-| R-NEG-003 | Missing fromChainId     | 400                   | P1       |
-| R-NEG-004 | Missing fromAmount      | 400                   | P1       |
-| R-NEG-005 | Invalid token address   | 400 or 404            | P1       |
-| R-NEG-006 | Invalid chain ID        | 400 or 404            | P1       |
-| R-NEG-007 | Empty request body      | 400                   | P1       |
-| R-NEG-008 | Non-existent token pair | 400, code 1011        | P2       |
+| ID        | Test Case               | Expected Result | Priority |
+| --------- | ----------------------- | --------------- | -------- |
+| R-NEG-001 | Zero amount             | 400             | P0       |
+| R-NEG-002 | Negative amount         | 400             | P0       |
+| R-NEG-003 | Missing fromChainId     | 400             | P1       |
+| R-NEG-004 | Missing fromAmount      | 400             | P1       |
+| R-NEG-005 | Invalid token address   | 400 or 404      | P1       |
+| R-NEG-006 | Invalid chain ID        | 400 or 404      | P1       |
+| R-NEG-007 | Empty request body      | 400             | P1       |
+| R-NEG-008 | Non-existent token pair | 400, code 1011  | P2       |
 
 ### 3.3 GET /v1/tools
 
@@ -152,15 +152,15 @@ _Data-driven tests use 12 token pairs (6 bridge + 6 swap) from Section 2.3._
 
 #### Negative Tests
 
-| ID        | Test Case                  | Expected Result        | Priority |
-| --------- | -------------------------- | ---------------------- | -------- |
-| T-NEG-001 | Invalid chain ID           | 400, code 1011         | P1       |
-| T-NEG-002 | Invalid chain format       | 400, code 1011         | P2       |
-| T-NEG-003 | Empty chains parameter     | 400, code 1011         | P2       |
-| T-NEG-004 | Very large chain ID        | 400, code 1011         | P2       |
-| T-NEG-005 | Negative chain ID          | 400, code 1011         | P2       |
-| T-NEG-006 | Mixed valid/invalid chains | 400, code 1011         | P2       |
-| T-NEG-007 | Duplicate chain IDs        | 200, returns tools     | P2       |
+| ID        | Test Case                  | Expected Result    | Priority |
+| --------- | -------------------------- | ------------------ | -------- |
+| T-NEG-001 | Invalid chain ID           | 400, code 1011     | P1       |
+| T-NEG-002 | Invalid chain format       | 400, code 1011     | P2       |
+| T-NEG-003 | Empty chains parameter     | 400, code 1011     | P2       |
+| T-NEG-004 | Very large chain ID        | 400, code 1011     | P2       |
+| T-NEG-005 | Negative chain ID          | 400, code 1011     | P2       |
+| T-NEG-006 | Mixed valid/invalid chains | 400, code 1011     | P2       |
+| T-NEG-007 | Duplicate chain IDs        | 200, returns tools | P2       |
 
 ### 3.4 GET /v1/tokens (Token Search)
 
