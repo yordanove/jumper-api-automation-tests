@@ -3,7 +3,7 @@
  *
  * Tests valid quote requests for various token pairs including:
  * - Cross-chain bridges (ETH→POL, POL→ARB, BSC→ETH)
- * - Same-chain swaps (ETH→USDC, USDC→USDT, MATIC→USDC)
+ * - Same-chain swaps (ETH→USDC, USDC→USDT, POL→USDC)
  */
 
 import { test, expect } from '@playwright/test';
