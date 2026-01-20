@@ -37,8 +37,8 @@ This document outlines the test strategy for validating the LI.FI bridge/DEX agg
 | Level       | Description              | Frequency      | Duration |
 | ----------- | ------------------------ | -------------- | -------- |
 | Smoke       | Critical path validation | Every PR, push | ~2 min   |
-| Regression  | Full feature coverage    | Nightly        | ~10 min  |
-| Performance | Load/stress testing      | Weekly         | ~30 min  |
+| Regression  | Full feature coverage    | Every PR, push | ~10 min  |
+| Performance | Load/stress testing      | Manual         | ~30 min  |
 
 **Tag Taxonomy:** `@smoke` = critical subset (~10 tests); `@regression` = full suite (97 tests). All tests are tagged `@regression` by design for explicit suite naming.
 
@@ -74,11 +74,11 @@ _Swap Scenarios (6 pairs):_ 7. **ETH→USDC Swap (Ethereum)** - Native token to 
 
 #### Happy Path Tests
 
-_Token pair tests use data-driven approach with 12 pairs defined in Section 2.3. Representative examples shown below._
+_Data-driven tests use 12 token pairs (6 bridge + 6 swap) from Section 2.3._
 
 | ID       | Test Case                            | Priority | Tags                |
 | -------- | ------------------------------------ | -------- | ------------------- |
-| Q-HP-001 | USDC Ethereum to Polygon bridge      | P0       | @smoke @bridge      |
+| Q-HP-001 | 12 token pair quotes (data-driven)   | P0/P1    | @smoke/@regression  |
 | Q-HP-002 | USDC Polygon to Arbitrum bridge      | P1       | @regression @bridge |
 | Q-HP-003 | USDT BSC to Ethereum bridge          | P1       | @regression @bridge |
 | Q-HP-004 | ETH to USDC swap on Ethereum         | P0       | @smoke @swap        |
@@ -87,6 +87,9 @@ _Token pair tests use data-driven approach with 12 pairs defined in Section 2.3.
 | Q-HP-007 | Response contains transactionRequest | P1       | @regression         |
 | Q-HP-008 | Response includes gas cost estimates | P1       | @regression         |
 | Q-HP-009 | Response includes execution duration | P2       | @regression         |
+| Q-HP-010 | Custom slippage parameter            | P2       | @regression         |
+| Q-HP-011 | FASTEST order preference             | P2       | @regression         |
+| Q-HP-012 | Custom recipient address (toAddress) | P2       | @regression         |
 
 #### Negative Tests
 
@@ -98,19 +101,21 @@ _Token pair tests use data-driven approach with 12 pairs defined in Section 2.3.
 | Q-NEG-004 | Missing fromAmount         | 400, mentions fromAmount | P0       |
 | Q-NEG-005 | Missing fromChain          | 400                      | P1       |
 | Q-NEG-006 | Missing toToken            | 400                      | P1       |
-| Q-NEG-007 | Invalid chain ID           | 400 or 404               | P1       |
-| Q-NEG-008 | Invalid fromAddress format | 400                      | P1       |
-| Q-NEG-009 | Short address format       | 400                      | P2       |
-| Q-NEG-010 | Same token same chain      | 200 or 400               | P2       |
+| Q-NEG-007 | Invalid chain ID           | 400, code 1011           | P1       |
+| Q-NEG-008 | Invalid fromAddress format | 400, code 1011           | P1       |
+| Q-NEG-009 | Short address format       | 400, code 1011           | P2       |
+| Q-NEG-010 | Same token same chain      | 400, code 1011           | P2       |
 
 ### 3.2 POST /v1/advanced/routes
 
 #### Happy Path Tests
 
+_Data-driven tests use 12 token pairs (6 bridge + 6 swap) from Section 2.3._
+
 | ID       | Test Case                         | Priority | Tags        |
 | -------- | --------------------------------- | -------- | ----------- |
-| R-HP-001 | USDC Ethereum to Polygon routes   | P0       | @smoke      |
-| R-HP-002 | Returns multiple route options    | P1       | @regression |
+| R-HP-001 | 12 token pair routes (data-driven)| P0/P1    | @smoke/@regression |
+| R-HP-002 | Returns at least one route        | P1       | @regression |
 | R-HP-003 | Routes include gas cost estimates | P1       | @regression |
 | R-HP-004 | Route steps have complete data    | P1       | @regression |
 | R-HP-005 | Order parameter affects sorting   | P2       | @regression |
@@ -126,7 +131,7 @@ _Token pair tests use data-driven approach with 12 pairs defined in Section 2.3.
 | R-NEG-005 | Invalid token address   | 400 or 404            | P1       |
 | R-NEG-006 | Invalid chain ID        | 400 or 404            | P1       |
 | R-NEG-007 | Empty request body      | 400                   | P1       |
-| R-NEG-008 | Non-existent token pair | Empty routes or error | P2       |
+| R-NEG-008 | Non-existent token pair | 400, code 1011        | P2       |
 
 ### 3.3 GET /v1/tools
 
@@ -141,19 +146,21 @@ _Token pair tests use data-driven approach with 12 pairs defined in Section 2.3.
 | T-HP-005 | Returns tools for Bitcoin                 | P0       | @regression |
 | T-HP-006 | Returns tools for SUI                     | P0       | @regression |
 | T-HP-007 | Solana has bridges with SOL support       | P1       | @regression |
-| T-HP-008 | Multiple chain filter works               | P2       | @regression |
+| T-HP-008 | Bitcoin chain has bridges                 | P1       | @regression |
+| T-HP-009 | SUI chain has bridges                     | P1       | @regression |
+| T-HP-010 | Multiple chain filter works               | P2       | @regression |
 
 #### Negative Tests
 
 | ID        | Test Case                  | Expected Result        | Priority |
 | --------- | -------------------------- | ---------------------- | -------- |
-| T-NEG-001 | Invalid chain ID           | Empty results or error | P1       |
-| T-NEG-002 | Invalid chain format       | Handles gracefully     | P2       |
-| T-NEG-003 | Empty chains parameter     | 400 error (code 1011)  | P2       |
-| T-NEG-004 | Very large chain ID        | Handles gracefully     | P2       |
-| T-NEG-005 | Negative chain ID          | Error or empty         | P2       |
-| T-NEG-006 | Mixed valid/invalid chains | Handles gracefully     | P2       |
-| T-NEG-007 | Duplicate chain IDs        | Deduplicates           | P2       |
+| T-NEG-001 | Invalid chain ID           | 400, code 1011         | P1       |
+| T-NEG-002 | Invalid chain format       | 400, code 1011         | P2       |
+| T-NEG-003 | Empty chains parameter     | 400, code 1011         | P2       |
+| T-NEG-004 | Very large chain ID        | 400, code 1011         | P2       |
+| T-NEG-005 | Negative chain ID          | 400, code 1011         | P2       |
+| T-NEG-006 | Mixed valid/invalid chains | 400, code 1011         | P2       |
+| T-NEG-007 | Duplicate chain IDs        | 200, returns tools     | P2       |
 
 ### 3.4 GET /v1/tokens (Token Search)
 
